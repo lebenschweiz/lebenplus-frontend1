@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stellenanzeigen – lebenplus-jobs.ch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:    #0f1117;
+      --paper:  #f5f3ee;
+      --accent: #e05c2a;
+      --muted:  #8a8880;
+      --border: #dedad3;
+      --card:   #ffffff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+    header {
+      background: var(--ink); color: var(--paper);
+      padding: 0 5vw; display: flex; align-items: center;
+      justify-content: space-between; height: 64px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    header .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; }
+    header .logo span { color: var(--accent); }
+    header nav a { color: var(--paper); text-decoration: none; font-size: 0.875rem; opacity: 0.6; margin-left: 2rem; transition: opacity 0.2s; }
+    header nav a:hover { opacity: 1; }
+
+    .hero { background: var(--ink); color: var(--paper); padding: 80px 5vw 100px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(224,92,42,0.18) 0%, transparent 70%); }
+    .hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 680px; position: relative; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p { margin-top: 1.2rem; font-size: 1.05rem; opacity: 0.6; max-width: 480px; position: relative; }
+
+    .widget-wrap { background: var(--ink); padding: 0 5vw 60px; }
+
+    .section-header { max-width: 1200px; margin: 60px auto 28px; padding: 0 5vw; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+    .section-header h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.02em; }
+    .section-header .count { font-size: 0.875rem; color: var(--muted); }
+
+    .filters { max-width: 1200px; margin: 0 auto 32px; padding: 0 5vw; display: flex; gap: 10px; flex-wrap: wrap; }
+    .filter-btn { padding: 8px 18px; border: 1.5px solid var(--border); background: var(--card); border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.18s; color: var(--ink); }
+    .filter-btn:hover, .filter-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+    .jobs-grid { max-width: 1200px; margin: 0 auto; padding: 0 5vw 80px; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+    .job-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; text-decoration: none; color: inherit; cursor: pointer; animation: fadeUp 0.4s ease both; }
+    .job-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.09); border-color: var(--accent); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    .job-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .job-company-logo { width: 42px; height: 42px; border-radius: 8px; background: var(--paper); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--accent); flex-shrink: 0; }
+    .job-badge { font-size: 0.72rem; font-weight: 500; padding: 4px 10px; border-radius: 100px; background: rgba(224,92,42,0.1); color: var(--accent); border: 1px solid rgba(224,92,42,0.25); white-space: nowrap; }
+    .job-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; line-height: 1.3; }
+    .job-company { font-size: 0.875rem; color: var(--muted); }
+    .job-meta { display: flex; gap: 14px; font-size: 0.8rem; color: var(--muted); }
+    .job-meta span::before { content: attr(data-icon) ' '; }
+    .job-cta { margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; color: var(--accent); }
+    .job-cta::after { content: '→'; }
+
+    .status-box { max-width: 1200px; margin: 0 auto; padding: 0 5vw 60px; display: flex; align-items: center; justify-content: center; min-height: 240px; color: var(--muted); font-size: 0.95rem; gap: 12px; }
+    .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .pagination { max-width: 1200px; margin: 0 auto 80px; padding: 0 5vw; display: flex; gap: 8px; justify-content: center; }
+    .page-btn { width: 40px; height: 40px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--ink); transition: all 0.18s; }
+    .page-btn:hover, .page-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    footer { background: var(--ink); color: var(--paper); text-align: center; padding: 30px 5vw; font-size: 0.8rem; opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">lebenplus<span>-jobs</span></div>
+  <nav>
+    <a href="#">Alle Jobs</a>
+    <a href="#">Unternehmen</a>
+    <a href="#">Über uns</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Finde deinen<br><em>nächsten Job.</em></h1>
+  <p>Tausende aktuelle Stellenanzeigen in der Schweiz und Deutschland.</p>
+</section>
+
+<div class="widget-wrap">
+  <div class="cj-search-box" data-url="https://widget.careerjet.net/search-box/3bd48ee968ae2c95f03b0b651391d018"></div>
+</div>
+
+<div class="section-header">
+  <h2>Aktuelle Stellenanzeigen</h2>
+  <span class="count" id="job-count"></span>
+</div>
+
+<div class="filters" id="filter-bar">
+  <button class="filter-btn active" data-keyword="">Alle</button>
+  <button class="filter-btn" data-keyword="IT">IT & Tech</button>
+  <button class="filter-btn" data-keyword="Marketing">Marketing</button>
+  <button class="filter-btn" data-keyword="Vertrieb">Vertrieb</button>
+  <button class="filter-btn" data-keyword="Pflege">Pflege</button>
+  <button class="filter-btn" data-keyword="Finanzen">Finanzen</button>
+</div>
+
+<div id="jobs-container"></div>
+<div class="pagination" id="pagination"></div>
+
+<footer>
+  Powered by <a href="https://www.careerjet.de" style="color:var(--accent);text-decoration:none">Careerjet</a> · lebenplus-jobs.ch
+</footer>
+
+<!-- Careerjet Widget -->
+<script>
+(function(d){
+  var js=d.createElement('script');js.id='cj-search-box';js.async=true;
+  js.src='https://static.careerjet.org/js/all_widget_search_box_3rd_party.min.js?t='+Date.now();
+  d.body.appendChild(js);
+})(document);
+</script>
+
+<script>
+  // ─────────────────────────────────────────────────────────
+  // ⚠️  HIER NACH RENDER-DEPLOY eure Backend-URL eintragen:
+  // Beispiel: 'https://lebenplus-backend.onrender.com'
+  const BACKEND_URL = 'https://lebenplus-backend.onrender.com';
+  // ─────────────────────────────────────────────────────────
+
+  const PAGE_SIZE = 15;
+  let currentPage = 1;
+  let currentKeyword = '';
+
+  const container  = document.getElementById('jobs-container');
+  const pagination = document.getElementById('pagination');
+  const countEl    = document.getElementById('job-count');
+
+  function initials(name) {
+    return (name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  }
+
+  function showLoading() {
+    container.innerHTML = `<div class="status-box"><div class="spinner"></div><span>Stellenanzeigen werden geladen …</span></div>`;
+    pagination.innerHTML = '';
+  }
+
+  function showError(msg) {
+    container.innerHTML = `<div class="status-box">⚠️ ${msg}</div>`;
+  }
+
+  function renderJobs(jobs) {
+    if (!jobs || jobs.length === 0) {
+      container.innerHTML = `<div class="status-box">Keine Stellen gefunden.</div>`;
+      return;
+    }
+    const grid = document.createElement('div');
+    grid.className = 'jobs-grid';
+    jobs.forEach((job, i) => {
+      const card = document.createElement('a');
+      card.className = 'job-card';
+      card.href = job.url || '#';
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      card.style.animationDelay = `${i*40}ms`;
+      const company = job.company || 'Unbekannt';
+      card.innerHTML = `
+        <div class="job-card-top">
+          <div class="job-company-logo">${initials(company)}</div>
+          <span class="job-badge">${job.salary || 'Jetzt bewerben'}</span>
+        </div>
+        <div>
+          <div class="job-title">${job.title || 'Stelle'}</div>
+          <div class="job-company">${company}</div>
+        </div>
+        <div class="job-meta">
+          <span data-icon="📍">${job.locations || 'Standort unbekannt'}</span>
+          ${job.date ? `<span data-icon="🗓">${job.date}</span>` : ''}
+        </div>
+        <div class="job-cta">Stellenanzeige ansehen</div>`;
+      grid.appendChild(card);
+    });
+    container.innerHTML = '';
+    container.appendChild(grid);
+  }
+
+  function renderPagination(total) {
+    const totalPages = Math.min(Math.ceil(total / PAGE_SIZE), 20);
+    if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+    pagination.innerHTML = '';
+    const prev = document.createElement('button');
+    prev.className = 'page-btn'; prev.textContent = '←'; prev.disabled = currentPage === 1;
+    prev.addEventListener('click', () => loadJobs(currentPage - 1));
+    pagination.appendChild(prev);
+    for (let p = Math.max(1, currentPage-2); p <= Math.min(totalPages, currentPage+2); p++) {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+      btn.textContent = p;
+      btn.addEventListener('click', () => loadJobs(p));
+      pagination.appendChild(btn);
+    }
+    const next = document.createElement('button');
+    next.className = 'page-btn'; next.textContent = '→'; next.disabled = currentPage === totalPages;
+    next.addEventListener('click', () => loadJobs(currentPage + 1));
+    pagination.appendChild(next);
+  }
+
+  async function loadJobs(page) {
+    page = page || 1;
+    currentPage = page;
+    showLoading();
+    try {
+      const params = new URLSearchParams({
+        keywords: currentKeyword || 'Jobs',
+        location: 'Schweiz',
+        page: currentPage,
+        pagesize: PAGE_SIZE,
+      });
+      const res  = await fetch(`${BACKEND_URL}/api/jobs?${params}`);
+      const data = await res.json();
+      if (data.type === 'JOBS') {
+        const total = data.hits || 0;
+        countEl.textContent = total.toLocaleString('de-DE') + ' Stellen gefunden';
+        renderJobs(data.jobs);
+        renderPagination(total);
+      } else {
+        showError('Keine Ergebnisse von der API.');
+      }
+    } catch(e) {
+      showError('Backend nicht erreichbar. Bitte später versuchen.');
+    }
+  }
+
+  document.getElementById('filter-bar').addEventListener('click', function(e) {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentKeyword = btn.dataset.keyword;
+    loadJobs(1);
+  });
+
+  loadJobs(1);
+</script>
+</body>
+</html>
