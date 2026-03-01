@@ -212,13 +212,13 @@
     <div id="success-area" class="success-box" style="display:none">
       <div class="success-icon">✅</div>
       <h3>Bewerbung erhalten!</h3>
-      <p>Vielen Dank! Wir melden uns so bald wie möglich bei euch.<br>E-Mail: lebenschweizconsulting@gmail.com</p>
+      <p>Vielen Dank! Wir melden uns so bald wie möglich bei euch.<br>E-Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec80898e89829f8f849b8985968f83829f99809885828bac8b818d8580c28f8381">[email&#160;protected]</a></p>
     </div>
   </div>
 </div>
 
 <!-- Careerjet Widget -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 (function(d){
   var js=d.createElement('script');js.id='cj-search-box';js.async=true;
   js.src='https://static.careerjet.org/js/all_widget_search_box_3rd_party.min.js?t='+Date.now();
@@ -307,6 +307,15 @@
     }
   });
 
+  // Kategorien die IMMER das Popup zeigen (nie zu Careerjet abspringen)
+  const POPUP_KEYWORDS = ['pflege', 'sap', 'arzt', 'medizin', 'it software'];
+
+  function shouldUsePopup() {
+    if (kategorieData) return true;
+    const kw = currentKeyword.toLowerCase();
+    return POPUP_KEYWORDS.some(pk => kw.includes(pk));
+  }
+
   // ── JOBS ──
   function initials(name) {
     return (name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -333,7 +342,7 @@
       card.className = 'job-card';
       card.style.animationDelay = `${i*40}ms`;
       const company = job.company || 'Unbekannt';
-      const ctaText = kategorieData ? 'Jetzt bewerben' : 'Stellenanzeige ansehen';
+      const ctaText = shouldUsePopup() ? 'Jetzt bewerben' : 'Stellenanzeige ansehen';
 
       card.innerHTML = `
         <div class="job-card-top">
@@ -350,7 +359,7 @@
         </div>
         <div class="job-cta">${ctaText}</div>`;
 
-      if (kategorieData) {
+      if (shouldUsePopup()) {
         card.addEventListener('click', () => openModal(job.title || 'Stelle', company));
       } else {
         card.addEventListener('click', () => window.open(job.url || '#', '_blank', 'noopener'));
@@ -398,14 +407,4 @@
 
   document.getElementById('filter-bar').addEventListener('click', function(e) {
     const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentKeyword = btn.dataset.keyword;
-    loadJobs(1);
-  });
-
-  loadJobs(1);
-</script>
-</body>
-</html>
+    if (
