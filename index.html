@@ -367,7 +367,10 @@
         </div>
         <div class="job-cta">${ctaText}</div>`;
 
-      card.addEventListener('click', () => openModal(job.title || 'Stelle', company));
+      card.addEventListener('click', () => {
+        sessionStorage.setItem('currentJob', JSON.stringify(job));
+        window.location.href = '/job.html';
+      });
 
       grid.appendChild(card);
     });
