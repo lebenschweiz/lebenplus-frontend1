@@ -350,7 +350,7 @@
       card.className = 'job-card';
       card.style.animationDelay = `${i*40}ms`;
       const company = job.company || 'Unbekannt';
-      const ctaText = jobUsesPopup(job.title) ? 'Jetzt bewerben' : 'Stellenanzeige ansehen';
+      const ctaText = 'Jetzt bewerben';
 
       card.innerHTML = `
         <div class="job-card-top">
@@ -367,11 +367,7 @@
         </div>
         <div class="job-cta">${ctaText}</div>`;
 
-      if (jobUsesPopup(job.title)) {
-        card.addEventListener('click', () => openModal(job.title || 'Stelle', company));
-      } else {
-        card.addEventListener('click', () => window.open(job.url || '#', '_blank', 'noopener'));
-      }
+      card.addEventListener('click', () => openModal(job.title || 'Stelle', company));
 
       grid.appendChild(card);
     });
