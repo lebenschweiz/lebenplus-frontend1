@@ -14,9 +14,6 @@ jobs:
     steps:
       - name: Repo auschecken
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Python einrichten
         uses: actions/setup-python@v5
@@ -29,20 +26,8 @@ jobs:
       - name: Scraper ausführen
         run: python scraper.py
 
-      - name: jobs.json committen
-        run: |
-          git config user.name  "GitHub Actions"
-          git config user.email "actions@github.com"
-          # jobs.json zwischenspeichern
-          cp data/jobs.json /tmp/jobs.json
-          # Neuesten Stand vom Remote holen
-          git fetch origin main
-          git reset --hard origin/main
-          # jobs.json wiederherstellen
-          mkdir -p data
-          cp /tmp/jobs.json data/jobs.json
-          # Committen und pushen
-          git add data/jobs.json
-          git diff --staged --quiet && echo "Keine Änderungen" && exit 0
-          git commit -m "Jobs aktualisiert: $(date +'%d.%m.%Y %H:%M')"
-          git push origin main
+      - name: Änderungen committen und pushen
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Jobs aktualisiert"
+          file_pattern: data/jobs.json
