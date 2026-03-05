@@ -33,7 +33,16 @@ jobs:
         run: |
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
+          # jobs.json zwischenspeichern
+          cp data/jobs.json /tmp/jobs.json
+          # Neuesten Stand vom Remote holen
+          git fetch origin main
+          git reset --hard origin/main
+          # jobs.json wiederherstellen
+          mkdir -p data
+          cp /tmp/jobs.json data/jobs.json
+          # Committen und pushen
           git add data/jobs.json
           git diff --staged --quiet && echo "Keine Änderungen" && exit 0
           git commit -m "Jobs aktualisiert: $(date +'%d.%m.%Y %H:%M')"
-          git push --force origin main
+          git push origin main
