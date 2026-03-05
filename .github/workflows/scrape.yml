@@ -2,8 +2,11 @@ name: Jobs täglich aktualisieren
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # täglich um 06:00 UTC (08:00 Schweizer Zeit)
-  workflow_dispatch:        # manuell ausführbar im GitHub Interface
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
