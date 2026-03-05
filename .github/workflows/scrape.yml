@@ -23,6 +23,11 @@ jobs:
       - name: Abhängigkeiten installieren
         run: pip install requests
 
+      - name: Render aufwecken (30 Sek warten)
+        run: |
+          curl -s https://lebenplus-backend.onrender.com/api/myip || true
+          sleep 30
+
       - name: Scraper ausführen
         run: python scraper.py
 
