@@ -3,11 +3,13 @@ import json
 import os
 from datetime import datetime
 
-API_KEY   = '7eb0408f27764cd139b0c35cb9f85e45'
+# Euer Render.com Backend als Proxy (IP ist dort registriert)
+BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
+
 KEYWORDS  = 'Pflegefachkraft Pflege Krankenpflege'
 LOCATION  = 'Schweiz'
-PAGE_SIZE = 50  # max jobs pro Abruf
-PAGES     = 4   # 4 x 50 = bis zu 200 Jobs
+PAGE_SIZE = 50
+PAGES     = 4
 
 def fetch_jobs():
     all_jobs = []
@@ -15,19 +17,17 @@ def fetch_jobs():
 
     for page in range(1, PAGES + 1):
         params = {
-            'affid':       API_KEY,
-            'locale_code': 'de_CH',
-            'keywords':    KEYWORDS,
-            'location':    LOCATION,
-            'pagesize':    PAGE_SIZE,
-            'page':        page,
+            'keywords': KEYWORDS,
+            'location': LOCATION,
+            'pagesize': PAGE_SIZE,
+            'page':     page,
         }
         try:
-            r = requests.get('https://public.api.careerjet.net/search', params=params, timeout=15)
+            r = requests.get(BACKEND_URL, params=params, timeout=30)
             data = r.json()
 
             if data.get('type') != 'JOBS':
-                print(f"Seite {page}: Keine Jobs oder Fehler – {data.get('type')}")
+                print(f"Seite {page}: Keine Jobs – {data.get('type')}")
                 break
 
             jobs = data.get('jobs', [])
@@ -50,7 +50,7 @@ def fetch_jobs():
                     'url':         url,
                 })
 
-            print(f"Seite {page}: {len(jobs)} Jobs geladen (total: {len(all_jobs)})")
+            print(f"Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
 
             if len(jobs) < PAGE_SIZE:
                 break
@@ -67,9 +67,9 @@ def main():
     print(f"Gesamt: {len(jobs)} Jobs gefunden")
 
     output = {
-        'updated':   datetime.now().strftime('%d.%m.%Y %H:%M'),
-        'total':     len(jobs),
-        'jobs':      jobs,
+        'updated': datetime.now().strftime('%d.%m.%Y %H:%M'),
+        'total':   len(jobs),
+        'jobs':    jobs,
     }
 
     os.makedirs('data', exist_ok=True)
