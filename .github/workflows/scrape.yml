@@ -2,8 +2,11 @@ name: Jobs täglich aktualisieren
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # täglich um 06:00 UTC (08:00 Schweizer Zeit)
-  workflow_dispatch:        # manuell ausführbar im GitHub Interface
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
@@ -27,6 +30,7 @@ jobs:
         run: |
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
+          git pull --rebase origin main
           git add data/jobs.json
           git diff --staged --quiet || git commit -m "Jobs aktualisiert: $(date +'%d.%m.%Y %H:%M')"
           git push
