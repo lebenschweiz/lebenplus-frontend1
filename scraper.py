@@ -5,7 +5,7 @@ from datetime import datetime
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 
-KEYWORDS  = 'Pflegefachkraft Pflege Krankenpflege'
+KEYWORDS  = 'Pflege'
 LOCATION  = 'Schweiz'
 PAGE_SIZE = 50
 PAGES     = 4
@@ -23,8 +23,7 @@ def fetch_jobs():
         }
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
-            print(f"HTTP Status: {r.status_code}")
-            print(f"Antwort: {r.text[:500]}")
+            print(f"Seite {page} – HTTP Status: {r.status_code}")
 
             data = r.json()
 
@@ -52,7 +51,7 @@ def fetch_jobs():
                     'url':         url,
                 })
 
-            print(f"Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
+            print(f"Seite {page}: {len(jobs)} Jobs (total bisher: {len(all_jobs)})")
 
             if len(jobs) < PAGE_SIZE:
                 break
