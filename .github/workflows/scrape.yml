@@ -23,14 +23,6 @@ jobs:
       - name: Abhängigkeiten installieren
         run: pip install requests
 
-      - name: Render aufwecken (60 Sek warten)
-        run: |
-          echo "Render aufwecken..."
-          curl -s https://lebenplus-backend.onrender.com/api/myip || true
-          echo "Warte 60 Sekunden bis Render bereit ist..."
-          sleep 60
-          echo "Render sollte jetzt bereit sein"
-
       - name: Scraper ausführen
         run: python scraper.py
 
