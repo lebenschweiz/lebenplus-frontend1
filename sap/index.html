@@ -268,8 +268,21 @@ function openPopup(i) {
   if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
   document.getElementById('ppMeta').innerHTML = meta;
-  // Show full description with HTML formatting from Careerjet
-  document.getElementById('ppDesc').innerHTML = job.description || '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
+  // Beschreibung formatieren: Zeilenumbrüche und **fett** in HTML umwandeln
+  function formatDesc(text) {
+    if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
+    // Falls es HTML ist (von API), direkt anzeigen
+    if (text.includes('<') && text.includes('>')) return text;
+    // Sonst Markdown-ähnlich formatieren
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n• /g, '</p><ul><li>')
+      .replace(/\n/g, '<br>')
+      .replace(/<\/p><ul><li>/g, '</p><ul><li>')
+      ;
+  }
+  document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
   document.getElementById('applyForm').style.display = 'block';
