@@ -7,8 +7,8 @@ BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 
 KEYWORDS  = 'Pflege'
 LOCATION  = 'Schweiz'
-PAGE_SIZE = 50
-PAGES     = 4
+PAGE_SIZE = 20
+PAGES     = 10  # 10 Seiten × 20 = 200 Jobs
 
 def fetch_jobs():
     all_jobs = []
@@ -33,6 +33,7 @@ def fetch_jobs():
 
             jobs = data.get('jobs', [])
             if not jobs:
+                print(f"Seite {page}: Keine Jobs mehr.")
                 break
 
             for job in jobs:
@@ -51,10 +52,7 @@ def fetch_jobs():
                     'url':         url,
                 })
 
-            print(f"Seite {page}: {len(jobs)} Jobs (total bisher: {len(all_jobs)})")
-
-            if len(jobs) < PAGE_SIZE:
-                break
+            print(f"Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
 
         except Exception as e:
             print(f"Fehler auf Seite {page}: {e}")
