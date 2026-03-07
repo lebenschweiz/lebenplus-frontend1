@@ -16,7 +16,7 @@
   .logo span { color:var(--accent); }
   .nav-links { display:flex; gap:2rem; }
   .nav-links a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color:var(--text); }
+  .nav-links a:hover,.nav-links a.active { color:var(--text); }
 
   .hero { padding:5rem 2rem 3rem; max-width:960px; margin:0 auto; }
   .hero-tag { display:inline-block; background:var(--accent); color:white; font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:2px; margin-bottom:1.5rem; }
@@ -52,50 +52,50 @@
   .job-company { color:var(--muted); font-size:0.88rem; }
   .job-desc-preview { color:#aaa; font-size:0.85rem; line-height:1.5; margin-top:0.8rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .job-meta { display:flex; gap:1.2rem; margin-top:1rem; flex-wrap:wrap; }
-  .job-meta span { font-size:0.8rem; color:var(--muted); display:flex; align-items:center; gap:0.35rem; }
+  .job-meta span { font-size:0.8rem; color:var(--muted); }
   .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
-  .job-apply:hover { color:var(--accent2); }
 
-  /* DETAIL POPUP */
-  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:200; align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow-y:auto; }
+  /* POPUP – full screen two-column */
+  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:1rem; }
   .popup-overlay.open { display:flex; }
-  .popup { background:#1a1a1a; border:1px solid var(--border); border-radius:14px; width:100%; max-width:680px; position:relative; animation:popIn 0.2s ease; margin:auto; }
-  @keyframes popIn { from{opacity:0;transform:scale(0.97) translateY(10px)} to{opacity:1;transform:none} }
+  .popup { background:#1a1a1a; border:1px solid var(--border); border-radius:16px; width:100%; max-width:900px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.2s ease; }
+  @keyframes popIn { from{opacity:0;transform:scale(0.97)} to{opacity:1;transform:none} }
+  @media(max-width:700px) { .popup { grid-template-columns:1fr; max-height:95vh; } }
 
-  /* Two-panel layout */
-  .popup-inner { display:grid; grid-template-columns:1fr; }
-  .popup-detail { padding:2rem; border-bottom:1px solid var(--border); }
-  .popup-apply-section { padding:2rem; }
-
-  .popup-close { position:absolute; top:1rem; right:1rem; background:#222; border:1px solid var(--border); color:var(--muted); cursor:pointer; font-size:1rem; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; }
+  .popup-close { position:absolute; top:1rem; right:1rem; background:#222; border:1px solid var(--border); color:var(--muted); cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:1rem; }
   .popup-close:hover { color:var(--text); background:#333; }
 
-  .popup-company-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; }
+  /* Left: job detail */
+  .popup-detail { padding:2rem; overflow-y:auto; border-right:1px solid var(--border); }
+  .popup-company-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
   .popup-logo { width:46px; height:46px; border-radius:10px; background:#222; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); flex-shrink:0; }
   .popup-company-name { color:var(--muted); font-size:0.9rem; }
-  .popup-title { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; line-height:1.2; margin-bottom:1rem; }
-  .popup-meta-row { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
-  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:var(--muted); background:#222; padding:0.3rem 0.7rem; border-radius:20px; }
-  .popup-description { font-size:0.92rem; line-height:1.7; color:#ccc; }
+  .popup-job-title { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; line-height:1.2; margin-bottom:1rem; }
+  .popup-meta-row { display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.5rem; }
+  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:var(--muted); background:#222; padding:0.3rem 0.8rem; border-radius:20px; }
+  .popup-desc-title { font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:0.8rem; }
+  .popup-description { font-size:0.92rem; line-height:1.75; color:#ccc; }
   .popup-description b { color:var(--text); font-weight:600; }
-  .popup-ext-link { display:inline-flex; align-items:center; gap:0.4rem; margin-top:1.2rem; color:var(--accent); font-size:0.85rem; font-weight:600; text-decoration:none; border:1px solid var(--accent); padding:0.4rem 1rem; border-radius:5px; transition:background 0.2s; }
-  .popup-ext-link:hover { background:rgba(232,93,47,0.1); }
+  .popup-description br + br { display:block; margin:0.4rem 0; content:""; }
 
-  .apply-title { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; margin-bottom:1.2rem; }
+  /* Right: apply form */
+  .popup-apply { padding:2rem; overflow-y:auto; background:#151515; }
+  .apply-title { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; margin-bottom:1.2rem; }
   .form-group { margin-bottom:1rem; }
-  .form-group label { display:block; font-size:0.78rem; font-weight:500; color:var(--muted); margin-bottom:0.35rem; text-transform:uppercase; letter-spacing:0.05em; }
-  .form-group input, .form-group textarea { width:100%; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:0.65rem 0.9rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.93rem; transition:border-color 0.2s; }
+  .form-group label { display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:0.35rem; text-transform:uppercase; letter-spacing:0.06em; }
+  .form-group input, .form-group textarea { width:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:6px; padding:0.65rem 0.9rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.92rem; transition:border-color 0.2s; }
   .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); }
   .form-group textarea { resize:vertical; min-height:80px; }
-  .file-upload { width:100%; background:var(--card); border:1px dashed var(--border); border-radius:6px; padding:0.9rem; text-align:center; cursor:pointer; transition:border-color 0.2s; color:var(--muted); font-size:0.85rem; position:relative; }
+  .file-upload { width:100%; background:#1a1a1a; border:1px dashed var(--border); border-radius:6px; padding:0.9rem; text-align:center; cursor:pointer; color:var(--muted); font-size:0.85rem; position:relative; transition:border-color 0.2s; }
   .file-upload:hover { border-color:var(--accent); }
   .file-upload input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
   .file-name { font-size:0.8rem; color:var(--accent); margin-top:0.3rem; }
   .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:7px; padding:0.85rem; font-size:1rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s; margin-top:0.5rem; }
   .submit-btn:hover { background:var(--accent2); }
-  .success-msg { display:none; text-align:center; padding:2rem; }
-  .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.3rem; margin-bottom:0.8rem; }
-  .success-msg p { color:var(--muted); }
+  .success-msg { display:none; text-align:center; padding:3rem 1rem; }
+  .success-msg .check { font-size:3rem; margin-bottom:1rem; }
+  .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:0.6rem; }
+  .success-msg p { color:var(--muted); font-size:0.9rem; }
   .loading { text-align:center; padding:4rem; color:var(--muted); }
   .no-jobs { text-align:center; padding:4rem; color:var(--muted); }
 </style>
@@ -114,7 +114,7 @@
 <div class="hero">
   <div class="hero-tag">SAP &amp; IT</div>
   <h1>SAP Jobs<br>in der <em>Schweiz.</em></h1>
-  <p>Aktuelle SAP-Stellen: SAP Basis, ABAP, SAP FI/CO, SAP MM, SAP SD und mehr – täglich aktualisiert.</p>
+  <p>Aktuelle SAP-Stellen: SAP Basis, ABAP, FI/CO, MM, SD und mehr – täglich aktualisiert.</p>
   <div class="hero-stats">
     <div class="stat"><div class="stat-num" id="totalJobs">–</div><div class="stat-label">Stellen verfügbar</div></div>
     <div class="stat"><div class="stat-num">Täglich</div><div class="stat-label">aktualisiert</div></div>
@@ -143,58 +143,57 @@
 <div class="popup-overlay" id="popupOverlay" onclick="closePopupOnBg(event)">
   <div class="popup">
     <button class="popup-close" onclick="closePopup()">✕</button>
-    <div id="popupContent">
-      <!-- Detail Panel -->
-      <div class="popup-detail">
-        <div class="popup-company-row">
-          <div class="popup-logo" id="ppLogo"></div>
-          <div class="popup-company-name" id="ppCompany"></div>
-        </div>
-        <div class="popup-title" id="ppTitle"></div>
-        <div class="popup-meta-row" id="ppMeta"></div>
-        <div class="popup-description" id="ppDesc"></div>
-        <a href="#" class="popup-ext-link" id="ppExtLink" target="_blank" rel="noopener">↗ Vollständige Stelle ansehen</a>
+
+    <!-- LEFT: Job Detail -->
+    <div class="popup-detail">
+      <div class="popup-company-row">
+        <div class="popup-logo" id="ppLogo"></div>
+        <div class="popup-company-name" id="ppCompany"></div>
       </div>
-      <!-- Apply Panel -->
-      <div class="popup-apply-section">
-        <div class="apply-title">Jetzt bewerben</div>
-        <form id="applyForm" name="bewerbung-sap" data-netlify="true" netlify-honeypot="bot-field" onsubmit="submitForm(event)">
-          <input type="hidden" name="form-name" value="bewerbung-sap">
-          <input type="hidden" name="stelle" id="hiddenStelle">
-          <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
-          <input type="hidden" name="job-url" id="hiddenUrl">
-          <p style="display:none"><input name="bot-field"></p>
-          <div class="form-group">
-            <label>Vollständiger Name *</label>
-            <input type="text" name="name" required placeholder="Max Mustermann">
-          </div>
-          <div class="form-group">
-            <label>E-Mail-Adresse *</label>
-            <input type="email" name="email" required placeholder="max@beispiel.ch">
-          </div>
-          <div class="form-group">
-            <label>Telefonnummer</label>
-            <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
-          </div>
-          <div class="form-group">
-            <label>Kurze Vorstellung</label>
-            <textarea name="vorstellung" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Lebenslauf (PDF oder Word)</label>
-            <div class="file-upload">
-              <div>📎 Datei auswählen oder hier ablegen</div>
-              <div class="file-name" id="fileName"></div>
-              <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
-            </div>
-          </div>
-          <button type="submit" class="submit-btn">Bewerbung absenden →</button>
-        </form>
-        <div class="success-msg" id="successMsg">
-          <div style="font-size:3rem;margin-bottom:1rem">✅</div>
-          <h3>Bewerbung gesendet!</h3>
-          <p>Wir leiten Ihre Bewerbung weiter. Sie hören bald von uns.</p>
+      <div class="popup-job-title" id="ppTitle"></div>
+      <div class="popup-meta-row" id="ppMeta"></div>
+      <div class="popup-desc-title">Stellenbeschreibung</div>
+      <div class="popup-description" id="ppDesc"></div>
+    </div>
+
+    <!-- RIGHT: Apply Form -->
+    <div class="popup-apply">
+      <div class="apply-title">Jetzt bewerben</div>
+      <form id="applyForm" name="bewerbung-sap" data-netlify="true" netlify-honeypot="bot-field" onsubmit="submitForm(event)">
+        <input type="hidden" name="form-name" value="bewerbung-sap">
+        <input type="hidden" name="stelle" id="hiddenStelle">
+        <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
+        <p style="display:none"><input name="bot-field"></p>
+        <div class="form-group">
+          <label>Vollständiger Name *</label>
+          <input type="text" name="name" required placeholder="Max Mustermann">
         </div>
+        <div class="form-group">
+          <label>E-Mail-Adresse *</label>
+          <input type="email" name="email" required placeholder="max@beispiel.ch">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer</label>
+          <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
+        </div>
+        <div class="form-group">
+          <label>Kurze Vorstellung</label>
+          <textarea name="vorstellung" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Lebenslauf (PDF oder Word)</label>
+          <div class="file-upload">
+            <div>📎 Datei auswählen</div>
+            <div class="file-name" id="fileName"></div>
+            <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Bewerbung absenden →</button>
+      </form>
+      <div class="success-msg" id="successMsg">
+        <div class="check">✅</div>
+        <h3>Bewerbung gesendet!</h3>
+        <p>Wir leiten Ihre Bewerbung weiter.<br>Sie hören bald von uns.</p>
       </div>
     </div>
   </div>
@@ -202,6 +201,7 @@
 
 <script>
 let allJobs = [];
+let currentFiltered = [];
 
 async function loadJobs() {
   try {
@@ -212,35 +212,11 @@ async function loadJobs() {
     document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
     renderJobs(allJobs);
   } catch(e) {
-    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden der Jobs.</div>';
+    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden.</div>';
   }
 }
 
-function stripHtml(html) {
-  return (html || '').replace(/<[^>]*>/g, '').trim();
-}
-
-function renderJobs(jobs) {
-  document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
-  if (!jobs.length) { document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine Stellen gefunden.</div>'; return; }
-  document.getElementById('jobsGrid').innerHTML = jobs.map((job,i) => `
-    <div class="job-card" onclick="openPopup(${i})">
-      <div class="job-top">
-        <div class="job-logo">${(job.company||'?')[0].toUpperCase()}</div>
-        <span class="job-badge">SAP</span>
-      </div>
-      <div class="job-title">${job.title}</div>
-      <div class="job-company">${job.company || 'Unbekannt'}</div>
-      ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
-      <div class="job-meta">
-        <span>📍 ${job.locations||'Schweiz'}</span>
-        <span>📅 ${formatDate(job.date)}</span>
-        ${job.salary ? `<span>💰 ${job.salary}</span>` : ''}
-      </div>
-      <span class="job-apply">Details &amp; Bewerben →</span>
-    </div>
-  `).join('');
-}
+function stripHtml(h) { return (h||'').replace(/<[^>]*>/g,'').trim(); }
 
 function formatDate(d) {
   if (!d) return '';
@@ -248,19 +224,6 @@ function formatDate(d) {
   catch(e) { return d; }
 }
 
-function filterJobs() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  if (!q) { renderJobs(allJobs); return; }
-  renderJobs(allJobs.filter(j =>
-    (j.title||'').toLowerCase().includes(q) ||
-    (j.company||'').toLowerCase().includes(q) ||
-    (j.locations||'').toLowerCase().includes(q) ||
-    (j.description||'').toLowerCase().includes(q)
-  ));
-}
-
-// Use filtered index mapping
-let currentFiltered = [];
 function renderJobs(jobs) {
   currentFiltered = jobs;
   document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
@@ -272,64 +235,65 @@ function renderJobs(jobs) {
         <span class="job-badge">SAP</span>
       </div>
       <div class="job-title">${job.title}</div>
-      <div class="job-company">${job.company || 'Unbekannt'}</div>
+      <div class="job-company">${job.company||'Unbekannt'}</div>
       ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
       <div class="job-meta">
         <span>📍 ${job.locations||'Schweiz'}</span>
         <span>📅 ${formatDate(job.date)}</span>
-        ${job.salary ? `<span>💰 ${job.salary}</span>` : ''}
+        ${job.salary?`<span>💰 ${job.salary}`:''}
       </div>
       <span class="job-apply">Details &amp; Bewerben →</span>
     </div>
   `).join('');
 }
 
+function filterJobs() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  renderJobs(!q ? allJobs : allJobs.filter(j =>
+    (j.title||'').toLowerCase().includes(q) ||
+    (j.company||'').toLowerCase().includes(q) ||
+    (j.locations||'').toLowerCase().includes(q) ||
+    (j.description||'').toLowerCase().includes(q)
+  ));
+}
+
 function openPopup(i) {
   const job = currentFiltered[i];
   if (!job) return;
-
   document.getElementById('ppLogo').textContent = (job.company||'?')[0].toUpperCase();
-  document.getElementById('ppCompany').textContent = job.company || '';
-  document.getElementById('ppTitle').textContent = job.title || '';
-  document.getElementById('ppExtLink').href = job.url || '#';
-
-  // Meta
+  document.getElementById('ppCompany').textContent = job.company||'';
+  document.getElementById('ppTitle').textContent = job.title||'';
   let meta = '';
   if (job.locations) meta += `<span class="popup-meta-item">📍 ${job.locations}</span>`;
   if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
   document.getElementById('ppMeta').innerHTML = meta;
-
-  // Description – render HTML from Careerjet (has <b> tags)
+  // Show full description with HTML formatting from Careerjet
   document.getElementById('ppDesc').innerHTML = job.description || '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
-
-  // Form hidden fields
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
-  document.getElementById('hiddenUrl').value = job.url;
-
   document.getElementById('applyForm').style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Scroll description to top
+  document.querySelector('.popup-detail').scrollTop = 0;
 }
 
 function closePopup() {
   document.getElementById('popupOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-function closePopupOnBg(e) { if (e.target === document.getElementById('popupOverlay')) closePopup(); }
-function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name || ''; }
-
+function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay')) closePopup(); }
+function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name||''; }
 async function submitForm(e) {
   e.preventDefault();
-  try { await fetch('/', { method:'POST', body: new FormData(e.target) }); } catch(err) {}
+  try { await fetch('/', {method:'POST', body:new FormData(e.target)}); } catch(err){}
   document.getElementById('applyForm').style.display = 'none';
   document.getElementById('successMsg').style.display = 'block';
   setTimeout(closePopup, 3000);
 }
-
-document.addEventListener('keydown', e => { if (e.key==='Escape') closePopup(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
 loadJobs();
 </script>
 </body>
