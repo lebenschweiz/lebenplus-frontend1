@@ -1,9 +1,10 @@
 import requests
 import json
 import os
+import base64
 from datetime import datetime
 
-# Euer Render.com Backend als Proxy (IP ist dort registriert)
+API_KEY     = '7eb0408f27764cd139b0c35cb9f85e45'
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 
 KEYWORDS  = 'Pflegefachkraft Pflege Krankenpflege'
@@ -15,6 +16,11 @@ def fetch_jobs():
     all_jobs = []
     seen_urls = set()
 
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (compatible; lebenplus-scraper/1.0)',
+        'X-Forwarded-For': '1.1.1.1',
+    }
+
     for page in range(1, PAGES + 1):
         params = {
             'keywords': KEYWORDS,
@@ -23,11 +29,14 @@ def fetch_jobs():
             'page':     page,
         }
         try:
-            r = requests.get(BACKEND_URL, params=params, timeout=30)
+            r = requests.get(BACKEND_URL, params=params, headers=headers, timeout=30)
+            print(f"HTTP Status: {r.status_code}")
+            print(f"Antwort: {r.text[:500]}")
+
             data = r.json()
 
             if data.get('type') != 'JOBS':
-                print(f"Seite {page}: Keine Jobs – {data.get('type')}")
+                print(f"Seite {page}: type={data.get('type')} message={data.get('message')}")
                 break
 
             jobs = data.get('jobs', [])
