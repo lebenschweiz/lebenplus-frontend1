@@ -4,36 +4,47 @@ import os
 from datetime import datetime
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
+PAGE_SIZE   = 20
+PAGES       = 10
 
-KEYWORDS  = 'Pflege'
-LOCATION  = 'Schweiz'
-PAGE_SIZE = 20
-PAGES     = 10  # 10 Seiten × 20 = 200 Jobs
+KATEGORIEN = [
+    {
+        'name':     'pflege',
+        'keywords': 'Pflege',
+        'location': 'Schweiz',
+        'output':   'data/pflege-jobs.json',
+    },
+    {
+        'name':     'sap',
+        'keywords': 'SAP',
+        'location': 'Schweiz',
+        'output':   'data/sap-jobs.json',
+    },
+]
 
-def fetch_jobs():
-    all_jobs = []
+def fetch_jobs(keywords, location):
+    all_jobs  = []
     seen_urls = set()
 
     for page in range(1, PAGES + 1):
         params = {
-            'keywords': KEYWORDS,
-            'location': LOCATION,
+            'keywords': keywords,
+            'location': location,
             'pagesize': PAGE_SIZE,
             'page':     page,
         }
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
-            print(f"Seite {page} – HTTP Status: {r.status_code}")
-
+            print(f"  Seite {page} – HTTP {r.status_code}")
             data = r.json()
 
             if data.get('type') != 'JOBS':
-                print(f"Seite {page}: type={data.get('type')} message={data.get('message')}")
+                print(f"  Seite {page}: type={data.get('type')} message={data.get('message')}")
                 break
 
             jobs = data.get('jobs', [])
             if not jobs:
-                print(f"Seite {page}: Keine Jobs mehr.")
+                print(f"  Seite {page}: Keine Jobs mehr.")
                 break
 
             for job in jobs:
@@ -52,30 +63,32 @@ def fetch_jobs():
                     'url':         url,
                 })
 
-            print(f"Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
+            print(f"  Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
 
         except Exception as e:
-            print(f"Fehler auf Seite {page}: {e}")
+            print(f"  Fehler auf Seite {page}: {e}")
             break
 
     return all_jobs
 
 def main():
     print(f"Starte Scraper – {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    jobs = fetch_jobs()
-    print(f"Gesamt: {len(jobs)} Jobs gefunden")
-
-    output = {
-        'updated': datetime.now().strftime('%d.%m.%Y %H:%M'),
-        'total':   len(jobs),
-        'jobs':    jobs,
-    }
-
     os.makedirs('data', exist_ok=True)
-    with open('data/jobs.json', 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
 
-    print("Gespeichert in data/jobs.json ✅")
+    for kat in KATEGORIEN:
+        print(f"\n=== {kat['name'].upper()} ===")
+        jobs = fetch_jobs(kat['keywords'], kat['location'])
+        print(f"Gesamt: {len(jobs)} Jobs")
+
+        output = {
+            'updated': datetime.now().strftime('%d.%m.%Y %H:%M'),
+            'total':   len(jobs),
+            'jobs':    jobs,
+        }
+
+        with open(kat['output'], 'w', encoding='utf-8') as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
+        print(f"Gespeichert: {kat['output']} ✅")
 
 if __name__ == '__main__':
     main()
