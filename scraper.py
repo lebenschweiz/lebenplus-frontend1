@@ -1,14 +1,9 @@
 import requests
 import json
 import os
-import base64
 from datetime import datetime
 
-API_KEY  = '7eb0408f27764cd139b0c35cb9f85e45'
-API_URL  = 'https://search.api.careerjet.net/v4/query'
-
-# Basic Auth: Base64(apikey + ":")
-credentials = base64.b64encode(f"{API_KEY}:".encode()).decode()
+BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 
 KEYWORDS  = 'Pflegefachkraft Pflege Krankenpflege'
 LOCATION  = 'Schweiz'
@@ -19,23 +14,15 @@ def fetch_jobs():
     all_jobs = []
     seen_urls = set()
 
-    headers = {
-        'Authorization': f'Basic {credentials}',
-        'User-Agent':    'Mozilla/5.0 (compatible; lebenplus-scraper/1.0)',
-    }
-
     for page in range(1, PAGES + 1):
         params = {
-            'locale_code': 'de_CH',
-            'keywords':    KEYWORDS,
-            'location':    LOCATION,
-            'page_size':   PAGE_SIZE,
-            'page':        page,
-            'user_ip':     '1.1.1.1',
-            'user_agent':  'Mozilla/5.0',
+            'keywords': KEYWORDS,
+            'location': LOCATION,
+            'pagesize': PAGE_SIZE,
+            'page':     page,
         }
         try:
-            r = requests.get(API_URL, params=params, headers=headers, timeout=30)
+            r = requests.get(BACKEND_URL, params=params, timeout=60)
             print(f"HTTP Status: {r.status_code}")
             print(f"Antwort: {r.text[:500]}")
 
