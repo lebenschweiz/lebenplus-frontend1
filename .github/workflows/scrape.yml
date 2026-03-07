@@ -37,4 +37,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Jobs aktualisiert"
-          file_pattern: data/jobs.json
+          file_pattern: data/*.json
