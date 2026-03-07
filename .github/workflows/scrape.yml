@@ -38,3 +38,4 @@ jobs:
         with:
           commit_message: "Jobs aktualisiert"
           file_pattern: data/*.json
+          push_options: '--force'
