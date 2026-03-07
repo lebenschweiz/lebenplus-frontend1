@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pflege Jobs Schweiz – lebenplus-jobs.ch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --card: #181818;
+    --border: #2a2a2a;
+    --accent: #e85d2f;
+    --accent2: #ff8c5a;
+    --text: #f0f0f0;
+    --muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(15,15,15,0.95); backdrop-filter: blur(10px); z-index: 100; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--text); text-decoration: none; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+  /* HERO */
+  .hero { padding: 5rem 2rem 3rem; max-width: 900px; margin: 0 auto; }
+  .hero-tag { display: inline-block; background: var(--accent); color: white; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1.5rem; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.05; margin-bottom: 1.2rem; }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { color: var(--muted); font-size: 1.1rem; line-height: 1.6; max-width: 550px; }
+  .hero-stats { display: flex; gap: 2.5rem; margin-top: 2.5rem; }
+  .stat { }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* SEARCH */
+  .search-wrap { max-width: 900px; margin: 0 auto 2rem; padding: 0 2rem; }
+  .search-box { display: flex; gap: 0.75rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; }
+  .search-box input { flex: 1; background: none; border: none; color: var(--text); font-size: 1rem; font-family: 'Inter', sans-serif; outline: none; }
+  .search-box input::placeholder { color: var(--muted); }
+  .search-box button { background: var(--accent); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; white-space: nowrap; }
+  .search-box button:hover { background: var(--accent2); }
+
+  /* JOBS */
+  .jobs-wrap { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+  .jobs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .jobs-header h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; }
+  .jobs-count { font-size: 0.9rem; color: var(--muted); }
+  .updated { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+  .jobs-grid { display: grid; gap: 1rem; }
+  .job-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; overflow: hidden; }
+  .job-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); transform: scaleY(0); transition: transform 0.2s; transform-origin: bottom; }
+  .job-card:hover { border-color: #444; transform: translateY(-2px); }
+  .job-card:hover::before { transform: scaleY(1); }
+  .job-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.8rem; }
+  .job-logo { width: 42px; height: 42px; border-radius: 8px; background: #222; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--accent); flex-shrink: 0; }
+  .job-badge { background: rgba(232,93,47,0.15); color: var(--accent); font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+  .job-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; line-height: 1.3; }
+  .job-company { color: var(--muted); font-size: 0.88rem; }
+  .job-meta { display: flex; gap: 1.2rem; margin-top: 1rem; flex-wrap: wrap; }
+  .job-meta span { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; }
+  .job-meta svg { width: 12px; height: 12px; opacity: 0.6; }
+  .job-apply { display: inline-block; margin-top: 1rem; color: var(--accent); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+  .job-apply:hover { color: var(--accent2); }
+
+  /* POPUP */
+  .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+  .popup-overlay.open { display: flex; }
+  .popup { background: #1a1a1a; border: 1px solid var(--border); border-radius: 14px; padding: 2rem; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; animation: popIn 0.2s ease; }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: none; } }
+  .popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.3rem; line-height: 1; }
+  .popup-close:hover { color: var(--text); }
+  .popup h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .popup-job-info { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .form-group input, .form-group textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 0.9rem; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.95rem; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .file-upload { width: 100%; background: var(--card); border: 1px dashed var(--border); border-radius: 6px; padding: 1rem; text-align: center; cursor: pointer; transition: border-color 0.2s; color: var(--muted); font-size: 0.88rem; position: relative; }
+  .file-upload:hover { border-color: var(--accent); color: var(--text); }
+  .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-name { font-size: 0.82rem; color: var(--accent); margin-top: 0.4rem; }
+  .submit-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: 7px; padding: 0.9rem; font-size: 1rem; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+  .submit-btn:hover { background: var(--accent2); }
+  .success-msg { display: none; text-align: center; padding: 2rem; }
+  .success-msg h3 { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 0.8rem; }
+  .success-msg p { color: var(--muted); }
+
+  .loading { text-align: center; padding: 4rem; color: var(--muted); }
+  .no-jobs { text-align: center; padding: 4rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">lebenplus<span>-jobs</span></a>
+  <div class="nav-links">
+    <a href="/pflege" class="active">Pflege</a>
+    <a href="/sap">SAP</a>
+    <a href="/">Alle Jobs</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Pflege & Medizin</div>
+  <h1>Pflege Jobs<br>in der <em>Schweiz.</em></h1>
+  <p>Aktuelle Stellenanzeigen für Pflegefachpersonen, FaGe, und medizinisches Personal – täglich aktualisiert.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num" id="totalJobs">–</div>
+      <div class="stat-label">Stellen verfügbar</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Täglich</div>
+      <div class="stat-label">aktualisiert</div>
+    </div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Stichwort suchen, z.B. Zürich, Intensivpflege …" oninput="filterJobs()">
+    <button onclick="filterJobs()">Suchen</button>
+  </div>
+</div>
+
+<div class="jobs-wrap">
+  <div class="jobs-header">
+    <div>
+      <h2>Aktuelle Stellen</h2>
+      <div class="updated" id="updatedAt"></div>
+    </div>
+    <div class="jobs-count" id="jobsCount"></div>
+  </div>
+  <div class="jobs-grid" id="jobsGrid">
+    <div class="loading">Jobs werden geladen …</div>
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopupOnBg(event)">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div id="popupContent">
+      <h3>Jetzt bewerben</h3>
+      <div class="popup-job-info" id="popupJobInfo"></div>
+      <form id="applyForm" name="bewerbung" data-netlify="true" netlify-honeypot="bot-field" onsubmit="submitForm(event)">
+        <input type="hidden" name="form-name" value="bewerbung">
+        <input type="hidden" name="stelle" id="hiddenStelle">
+        <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
+        <input type="hidden" name="job-url" id="hiddenUrl">
+        <p style="display:none"><input name="bot-field"></p>
+        <div class="form-group">
+          <label>Vollständiger Name *</label>
+          <input type="text" name="name" required placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label>E-Mail-Adresse *</label>
+          <input type="email" name="email" required placeholder="max@beispiel.ch">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer</label>
+          <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
+        </div>
+        <div class="form-group">
+          <label>Kurze Vorstellung</label>
+          <textarea name="vorstellung" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Lebenslauf (PDF oder Word)</label>
+          <div class="file-upload">
+            <div>📎 Datei auswählen oder hier ablegen</div>
+            <div class="file-name" id="fileName"></div>
+            <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Bewerbung absenden →</button>
+      </form>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+      <h3>Bewerbung gesendet!</h3>
+      <p>Wir leiten Ihre Bewerbung weiter. Sie hören bald von uns.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let allJobs = [];
+let currentJob = null;
+
+async function loadJobs() {
+  try {
+    const r = await fetch('/data/pflege-jobs.json?t=' + Date.now());
+    const data = await r.json();
+    allJobs = data.jobs || [];
+    document.getElementById('totalJobs').textContent = data.total || allJobs.length;
+    document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
+    renderJobs(allJobs);
+  } catch(e) {
+    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden der Jobs.</div>';
+  }
+}
+
+function renderJobs(jobs) {
+  document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
+  if (!jobs.length) {
+    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine Stellen gefunden.</div>';
+    return;
+  }
+  document.getElementById('jobsGrid').innerHTML = jobs.map(job => `
+    <div class="job-card" onclick="openPopup(${JSON.stringify(job).replace(/"/g,'&quot;')})">
+      <div class="job-top">
+        <div class="job-logo">${(job.company||'?')[0].toUpperCase()}</div>
+        <span class="job-badge">Pflege</span>
+      </div>
+      <div class="job-title">${job.title}</div>
+      <div class="job-company">${job.company || 'Unbekannt'}</div>
+      <div class="job-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>${job.locations||'Schweiz'}</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${formatDate(job.date)}</span>
+        ${job.salary ? `<span>💰 ${job.salary}</span>` : ''}
+      </div>
+      <span class="job-apply">Jetzt bewerben →</span>
+    </div>
+  `).join('');
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try { return new Date(d).toLocaleDateString('de-CH', {day:'2-digit',month:'2-digit',year:'numeric'}); }
+  catch(e) { return d; }
+}
+
+function filterJobs() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  if (!q) { renderJobs(allJobs); return; }
+  renderJobs(allJobs.filter(j =>
+    (j.title||'').toLowerCase().includes(q) ||
+    (j.company||'').toLowerCase().includes(q) ||
+    (j.locations||'').toLowerCase().includes(q) ||
+    (j.description||'').toLowerCase().includes(q)
+  ));
+}
+
+function openPopup(job) {
+  currentJob = job;
+  document.getElementById('popupJobInfo').innerHTML = `<strong>${job.title}</strong><br>${job.company || ''} · ${job.locations || ''}`;
+  document.getElementById('hiddenStelle').value = job.title;
+  document.getElementById('hiddenUnternehmen').value = job.company;
+  document.getElementById('hiddenUrl').value = job.url;
+  document.getElementById('applyForm').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('popupOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePopup() {
+  document.getElementById('popupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closePopupOnBg(e) {
+  if (e.target === document.getElementById('popupOverlay')) closePopup();
+}
+
+function showFileName(input) {
+  document.getElementById('fileName').textContent = input.files[0]?.name || '';
+}
+
+async function submitForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+  try {
+    await fetch('/', { method: 'POST', body: data });
+  } catch(err) {}
+  document.getElementById('applyForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+  setTimeout(closePopup, 3000);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+loadJobs();
+</script>
+</body>
+</html>
