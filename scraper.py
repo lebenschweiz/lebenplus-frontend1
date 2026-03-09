@@ -1,11 +1,7 @@
 import requests
 import json
 import os
-import re
-import time
 from datetime import datetime
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
@@ -15,72 +11,6 @@ KATEGORIEN = [
     { 'name': 'pflege', 'keywords': 'Pflege', 'location': 'Schweiz', 'output': 'data/pflege-jobs.json' },
     { 'name': 'sap',    'keywords': 'SAP',    'location': 'Schweiz', 'output': 'data/sap-jobs.json' },
 ]
-
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36',
-    'Accept-Language': 'de-CH,de;q=0.9',
-    'Accept': 'text/html,application/xhtml+xml',
-}
-
-def clean_html_to_text(html_fragment):
-    """Konvertiert HTML-Fragment zu lesbarem Text."""
-    text = re.sub(r'<script[^>]*>.*?</script>', '', html_fragment, flags=re.DOTALL)
-    text = re.sub(r'<style[^>]*>.*?</style>', '', text, flags=re.DOTALL)
-    text = re.sub(r'<li[^>]*>', '• ', text)
-    text = re.sub(r'</li>', '\n', text)
-    text = re.sub(r'<br\s*/?>', '\n', text)
-    text = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\n\1\n', text)
-    text = re.sub(r'<p[^>]*>', '\n', text)
-    text = re.sub(r'</p>', '\n', text)
-    text = re.sub(r'<strong[^>]*>(.*?)</strong>', r'**\1**', text)
-    text = re.sub(r'<b[^>]*>(.*?)</b>', r'**\1**', text)
-    text = re.sub(r'<[^>]+>', '', text)
-    text = re.sub(r'[ \t]+', ' ', text)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    return text.strip()
-
-def extract_careerjet_description(html):
-    """Extrahiert Beschreibung von Careerjet: Text zwischen </h1> und 'Arbeitssuchende'."""
-    match = re.search(r'</h1>(.*?)Arbeitssuchende', html, re.DOTALL)
-    if match:
-        return clean_html_to_text(match.group(1))
-    return None
-
-def extract_longest_text_block(html):
-    """Extrahiert den längsten zusammenhängenden Textblock aus <p> oder <div> Tags."""
-    soup = BeautifulSoup(html, 'html.parser')
-
-    # Entferne script/style Tags
-    for tag in soup.find_all(['script', 'style', 'nav', 'header', 'footer']):
-        tag.decompose()
-
-    longest = ''
-    for tag in soup.find_all(['p', 'div']):
-        text = tag.get_text(separator='\n', strip=True)
-        if len(text) > len(longest):
-            longest = text
-
-    return longest if len(longest) > 100 else None
-
-def fetch_full_description(job_url):
-    """Folgt dem jobviewtrack.com Redirect und holt die volle Beschreibung."""
-    try:
-        r = requests.get(job_url, headers=HEADERS, timeout=15, allow_redirects=True)
-        final_url = r.url
-        html = r.text
-
-        if 'careerjet.ch' in final_url or 'careerjet.com' in final_url:
-            desc = extract_careerjet_description(html)
-        else:
-            desc = extract_longest_text_block(html)
-
-        if desc and len(desc) > 300:
-            return desc
-        return None
-
-    except Exception as e:
-        print(f"    Fehler: {e}")
-        return None
 
 def fetch_jobs(keywords, location):
     all_jobs  = []
@@ -123,18 +53,6 @@ def fetch_jobs(keywords, location):
             print(f"  Fehler auf Seite {page}: {e}")
             break
 
-    # Volle Beschreibungen laden
-    print(f"\n  Lade Beschreibungen für {len(all_jobs)} Jobs...")
-    for i, job in enumerate(all_jobs):
-        print(f"  [{i+1}/{len(all_jobs)}] {job['title'][:45]}...")
-        full = fetch_full_description(job['url'])
-        if full:
-            job['description'] = full
-            print(f"    ✅ {len(full)} Zeichen")
-        else:
-            print(f"    ⚠️  Kurzbeschreibung behalten")
-        time.sleep(0.5)
-
     return all_jobs
 
 def main():
@@ -152,7 +70,7 @@ def main():
         }
         with open(kat['output'], 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
-        print(f"Gespeichert: {kat['output']} ✅")
+        print(f"Gespeichert: {kat['output']}")
 
 if __name__ == '__main__':
     main()
