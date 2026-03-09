@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Abhängigkeiten installieren
-        run: pip install requests
+        run: pip install requests beautifulsoup4
 
       - name: Render aufwecken (90 Sek warten)
         run: |
