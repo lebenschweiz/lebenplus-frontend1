@@ -55,7 +55,6 @@
   .job-meta span { font-size:0.8rem; color:var(--muted); }
   .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
 
-  /* POPUP – full screen two-column */
   .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:1rem; }
   .popup-overlay.open { display:flex; }
   .popup { background:#1a1a1a; border:1px solid var(--border); border-radius:16px; width:100%; max-width:900px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.2s ease; }
@@ -65,7 +64,6 @@
   .popup-close { position:absolute; top:1rem; right:1rem; background:#222; border:1px solid var(--border); color:var(--muted); cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:1rem; }
   .popup-close:hover { color:var(--text); background:#333; }
 
-  /* Left: job detail */
   .popup-detail { padding:2rem; overflow-y:auto; border-right:1px solid var(--border); }
   .popup-company-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
   .popup-logo { width:46px; height:46px; border-radius:10px; background:#222; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); flex-shrink:0; }
@@ -78,7 +76,6 @@
   .popup-description b { color:var(--text); font-weight:600; }
   .popup-description br + br { display:block; margin:0.4rem 0; content:""; }
 
-  /* Right: apply form */
   .popup-apply { padding:2rem; overflow-y:auto; background:#151515; }
   .apply-title { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; margin-bottom:1.2rem; }
   .form-group { margin-bottom:1rem; }
@@ -144,7 +141,6 @@
   <div class="popup">
     <button class="popup-close" onclick="closePopup()">✕</button>
 
-    <!-- LEFT: Job Detail -->
     <div class="popup-detail">
       <div class="popup-company-row">
         <div class="popup-logo" id="ppLogo"></div>
@@ -156,14 +152,11 @@
       <div class="popup-description" id="ppDesc"></div>
     </div>
 
-    <!-- RIGHT: Apply Form -->
     <div class="popup-apply">
       <div class="apply-title">Jetzt bewerben</div>
-      <form id="applyForm" name="bewerbung" data-netlify="true" netlify-honeypot="bot-field" onsubmit="submitForm(event)">
-        <input type="hidden" name="form-name" value="bewerbung">
+      <form id="applyForm" onsubmit="submitForm(event)">
         <input type="hidden" name="stelle" id="hiddenStelle">
         <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
-        <p style="display:none"><input name="bot-field"></p>
         <div class="form-group">
           <label>Vollständiger Name *</label>
           <input type="text" name="name" required placeholder="Max Mustermann">
@@ -268,12 +261,9 @@ function openPopup(i) {
   if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
   document.getElementById('ppMeta').innerHTML = meta;
-  // Beschreibung formatieren: Zeilenumbrüche und **fett** in HTML umwandeln
   function formatDesc(text) {
     if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
-    // Falls es HTML ist (von API), direkt anzeigen
     if (text.includes('<') && text.includes('>')) return text;
-    // Sonst Markdown-ähnlich formatieren
     return text
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\n\n/g, '</p><p>')
@@ -289,7 +279,6 @@ function openPopup(i) {
   document.getElementById('successMsg').style.display = 'none';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Scroll description to top
   document.querySelector('.popup-detail').scrollTop = 0;
 }
 
@@ -301,7 +290,13 @@ function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay
 function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name||''; }
 async function submitForm(e) {
   e.preventDefault();
-  try { await fetch('/', {method:'POST', body:new FormData(e.target)}); } catch(err){}
+  try {
+    await fetch('https://formspree.io/f/mlgpjpqp', {
+      method: 'POST',
+      body: new FormData(e.target),
+      headers: { 'Accept': 'application/json' }
+    });
+  } catch(err) {}
   document.getElementById('applyForm').style.display = 'none';
   document.getElementById('successMsg').style.display = 'block';
   setTimeout(closePopup, 3000);
