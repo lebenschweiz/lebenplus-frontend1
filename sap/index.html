@@ -55,40 +55,45 @@
   .job-meta span { font-size:0.8rem; color:var(--muted); }
   .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
 
-  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:1rem; }
+  /* POPUP */
+  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:200; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
   .popup-overlay.open { display:flex; }
-  .popup { background:#1a1a1a; border:1px solid var(--border); border-radius:16px; width:100%; max-width:900px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.2s ease; }
-  @keyframes popIn { from{opacity:0;transform:scale(0.97)} to{opacity:1;transform:none} }
+  .popup { background:#1a1a1a; border:1px solid #333; border-radius:18px; width:100%; max-width:940px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.25s cubic-bezier(0.34,1.4,0.64,1); box-shadow:0 30px 70px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04); }
+  @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(12px)} to{opacity:1;transform:none} }
   @media(max-width:700px) { .popup { grid-template-columns:1fr; max-height:95vh; } }
 
-  .popup-close { position:absolute; top:1rem; right:1rem; background:#222; border:1px solid var(--border); color:var(--muted); cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:1rem; }
-  .popup-close:hover { color:var(--text); background:#333; }
+  .popup-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:0.9rem; transition:background 0.2s,color 0.2s,transform 0.15s; }
+  .popup-close:hover { color:var(--text); background:rgba(255,255,255,0.12); transform:scale(1.1); }
 
-  .popup-detail { padding:2rem; overflow-y:auto; border-right:1px solid var(--border); }
-  .popup-company-row { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
-  .popup-logo { width:46px; height:46px; border-radius:10px; background:#222; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); flex-shrink:0; }
-  .popup-company-name { color:var(--muted); font-size:0.9rem; }
-  .popup-job-title { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; line-height:1.2; margin-bottom:1rem; }
-  .popup-meta-row { display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.5rem; }
-  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:var(--muted); background:#222; padding:0.3rem 0.8rem; border-radius:20px; }
-  .popup-desc-title { font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:0.8rem; }
-  .popup-description { font-size:0.92rem; line-height:1.75; color:#ccc; }
-  .popup-description b { color:var(--text); font-weight:600; }
-  .popup-description br + br { display:block; margin:0.4rem 0; content:""; }
+  /* LEFT: Job detail */
+  .popup-detail { padding:2.5rem; overflow-y:auto; border-right:1px solid var(--border); }
+  .popup-company-row { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+  .popup-logo { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#e85d2f,#ff8c5a); border:none; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; color:white; flex-shrink:0; box-shadow:0 6px 16px rgba(232,93,47,0.35); }
+  .popup-company-name { color:#bbb; font-size:0.92rem; font-weight:500; }
+  .popup-job-title { font-family:'Syne',sans-serif; font-size:1.45rem; font-weight:800; line-height:1.2; margin-bottom:1.1rem; }
+  .popup-meta-row { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; }
+  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:#ccc; background:rgba(255,255,255,0.06); padding:0.35rem 0.9rem; border-radius:20px; border:1px solid rgba(255,255,255,0.08); }
+  .popup-desc-title { font-family:'Syne',sans-serif; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:0.8rem; }
+  .popup-description { font-size:0.95rem; line-height:1.8; color:#ccc; background:#1f1f1f; padding:1.3rem 1.5rem; border-radius:10px; }
+  .popup-description strong { color:var(--text); }
+  .desc-section { color:#e85d2f; font-weight:700; font-family:'Syne',sans-serif; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; display:block; margin-top:1.4rem; margin-bottom:0.5rem; padding-bottom:0.4rem; border-bottom:1px solid rgba(232,93,47,0.25); }
+  .desc-section:first-child { margin-top:0; }
 
-  .popup-apply { padding:2rem; overflow-y:auto; background:#151515; }
-  .apply-title { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; margin-bottom:1.2rem; }
-  .form-group { margin-bottom:1rem; }
-  .form-group label { display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:0.35rem; text-transform:uppercase; letter-spacing:0.06em; }
-  .form-group input, .form-group textarea { width:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:6px; padding:0.65rem 0.9rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.92rem; transition:border-color 0.2s; }
-  .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); }
-  .form-group textarea { resize:vertical; min-height:80px; }
-  .file-upload { width:100%; background:#1a1a1a; border:1px dashed var(--border); border-radius:6px; padding:0.9rem; text-align:center; cursor:pointer; color:var(--muted); font-size:0.85rem; position:relative; transition:border-color 0.2s; }
-  .file-upload:hover { border-color:var(--accent); }
+  /* RIGHT: Apply form */
+  .popup-apply { padding:2rem 2rem 2rem; overflow-y:auto; background:#151515; }
+  .apply-title { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; margin-bottom:1.5rem; }
+  .form-group { margin-bottom:1.1rem; }
+  .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#aaa; margin-bottom:0.45rem; letter-spacing:0.04em; text-transform:uppercase; }
+  .form-group input, .form-group textarea { width:100%; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.85rem 1rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.95rem; transition:border-color 0.2s,background 0.2s; }
+  .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); background:#222; }
+  .form-group textarea { resize:vertical; min-height:90px; }
+  .file-upload { width:100%; background:#1e1e1e; border:1px dashed #333; border-radius:8px; padding:1rem; text-align:center; cursor:pointer; color:var(--muted); font-size:0.85rem; position:relative; transition:border-color 0.2s,background 0.2s; }
+  .file-upload:hover { border-color:var(--accent); background:#222; }
   .file-upload input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
   .file-name { font-size:0.8rem; color:var(--accent); margin-top:0.3rem; }
-  .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:7px; padding:0.85rem; font-size:1rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s; margin-top:0.5rem; }
-  .submit-btn:hover { background:var(--accent2); }
+  .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:9px; padding:1.05rem; font-size:1.05rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s,transform 0.15s; margin-top:0.75rem; letter-spacing:0.02em; }
+  .submit-btn:hover { background:var(--accent2); transform:translateY(-1px); }
+  .submit-btn:active { transform:translateY(0); }
   .success-msg { display:none; text-align:center; padding:3rem 1rem; }
   .success-msg .check { font-size:3rem; margin-bottom:1rem; }
   .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:0.6rem; }
@@ -250,6 +255,40 @@ function filterJobs() {
   ));
 }
 
+function formatDesc(text) {
+  if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
+  if (text.includes('<') && text.includes('>')) return text;
+  let t = text;
+  // Telefonnummern entfernen
+  t = t.replace(/(\+41|\+49|\+43|\+33|0041|0049)\s?[\d\s\.\-\/\(\)]{6,25}/g, '');
+  t = t.replace(/\b0\d{2,3}[\s\.\-]?\d{3}[\s\.\-]?\d{2}[\s\.\-]?\d{2}\b/g, '');
+  t = t.replace(/(Tel\.?\s*:?|Telefon\s*:?|Telefonnummer\s*:?|Mobile?\s*:?|Mobil\s*:?|Fax\s*:?)\s*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
+  // Abschnittstitel
+  const sections = [
+    'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
+    'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
+    'Was wir bieten','Wir bieten','Das bieten wir','Benefits','Benefit',
+    'Anforderungen','Qualifikationen','Das bringst du mit','Das bringen Sie mit',
+    'Über uns','Über die Stelle','Kontakt','Stellenbeschreibung'
+  ];
+  sections.forEach(s => {
+    const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
+      '$1<span class="desc-section">$2</span>');
+  });
+  // Markdown fett
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Zeilenumbruch nach Satzende vor Grossbuchstaben
+  t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br>$2');
+  // Doppelte Leerzeilen
+  t = t.replace(/\n\n+/g, '<br><br>');
+  // Aufzählungen
+  t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
+  // Einzelne Zeilenumbrüche
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
 function openPopup(i) {
   const job = currentFiltered[i];
   if (!job) return;
@@ -261,17 +300,6 @@ function openPopup(i) {
   if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
   document.getElementById('ppMeta').innerHTML = meta;
-  function formatDesc(text) {
-    if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
-    if (text.includes('<') && text.includes('>')) return text;
-    return text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n• /g, '</p><ul><li>')
-      .replace(/\n/g, '<br>')
-      .replace(/<\/p><ul><li>/g, '</p><ul><li>')
-      ;
-  }
   document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
@@ -280,6 +308,7 @@ function openPopup(i) {
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   document.querySelector('.popup-detail').scrollTop = 0;
+  document.querySelector('.popup-apply').scrollTop = 0;
 }
 
 function closePopup() {
