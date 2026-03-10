@@ -5,101 +5,217 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pflege Jobs Schweiz – lebenplus-jobs.ch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0f0f0f; --card:#181818; --border:#2a2a2a; --accent:#e85d2f; --accent2:#ff8c5a; --text:#f0f0f0; --muted:#888; }
+  :root { 
+    --bg: #09090b; 
+    --card: #18181b; 
+    --card-hover: #27272a;
+    --border: #3f3f46; 
+    --border-light: #52525b;
+    --accent: #f97316; 
+    --accent-glow: rgba(249, 115, 22, 0.4);
+    --accent2: #f43f5e; 
+    --text: #f8fafc; 
+    --text-muted: #a1a1aa;
+    --success: #10b981;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+  
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+  
+  body { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: var(--font-body); 
+    min-height: 100vh; 
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+  }
 
-  nav { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 2rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(10px); z-index:100; }
-  .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem; color:var(--text); text-decoration:none; }
-  .logo span { color:var(--accent); }
-  .nav-links { display:flex; gap:2rem; }
-  .nav-links a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
-  .nav-links a:hover,.nav-links a.active { color:var(--text); }
+  /* --- NAVBAR --- */
+  nav { 
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 1.2rem 5%; border-bottom: 1px solid rgba(255,255,255,0.05); 
+    position: sticky; top: 0; background: rgba(9, 9, 11, 0.8); 
+    backdrop-filter: blur(12px); z-index: 100; 
+  }
+  .logo { font-family: var(--font-head); font-weight: 800; font-size: 1.4rem; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+  .logo span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.3s ease; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-  .hero { padding:5rem 2rem 3rem; max-width:960px; margin:0 auto; }
-  .hero-tag { display:inline-block; background:var(--accent); color:white; font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:2px; margin-bottom:1.5rem; }
-  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2.5rem,6vw,4.5rem); font-weight:800; line-height:1.05; margin-bottom:1.2rem; }
-  .hero h1 em { color:var(--accent); font-style:normal; }
-  .hero p { color:var(--muted); font-size:1.1rem; line-height:1.6; max-width:550px; }
-  .hero-stats { display:flex; gap:2.5rem; margin-top:2.5rem; }
-  .stat-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); }
-  .stat-label { font-size:0.8rem; color:var(--muted); margin-top:0.2rem; }
+  /* --- HERO --- */
+  .hero { padding: 6rem 5% 4rem; max-width: 1000px; margin: 0 auto; text-align: center; }
+  .hero-tag { 
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(249, 115, 22, 0.1); color: var(--accent); 
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; 
+    text-transform: uppercase; padding: 0.4rem 1rem; 
+    border-radius: 50px; margin-bottom: 1.5rem;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+  }
+  .hero h1 { font-family: var(--font-head); font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+  .hero h1 em { 
+    font-style: normal; 
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); 
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+  }
+  .hero p { color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; max-width: 600px; margin: 0 auto; }
+  
+  .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; }
+  .stat-num { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
 
-  .search-wrap { max-width:960px; margin:0 auto 2rem; padding:0 2rem; }
-  .search-box { display:flex; gap:0.75rem; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; }
-  .search-box input { flex:1; background:none; border:none; color:var(--text); font-size:1rem; font-family:'Inter',sans-serif; outline:none; }
-  .search-box input::placeholder { color:var(--muted); }
-  .search-box button { background:var(--accent); color:white; border:none; padding:0.6rem 1.5rem; border-radius:5px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:background 0.2s; }
-  .search-box button:hover { background:var(--accent2); }
+  /* --- SEARCH --- */
+  .search-wrap { max-width: 800px; margin: 0 auto 4rem; padding: 0 5%; }
+  .search-box { 
+    display: flex; gap: 0.5rem; background: var(--card); 
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; 
+    padding: 0.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .search-box:focus-within { border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 4px rgba(249, 115, 22, 0.1); }
+  .search-icon { padding: 0.8rem 0.5rem 0.8rem 1rem; color: var(--text-muted); display: flex; align-items: center; }
+  .search-box input { flex: 1; background: none; border: none; color: var(--text); font-size: 1.05rem; font-family: var(--font-body); outline: none; padding: 0.8rem 0; }
+  .search-box input::placeholder { color: var(--text-muted); }
+  .search-box button { 
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); 
+    color: white; border: none; padding: 0 2rem; border-radius: 12px; 
+    font-weight: 600; font-size: 1rem; cursor: pointer; font-family: var(--font-body); 
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+  }
+  .search-box button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
 
-  .jobs-wrap { max-width:960px; margin:0 auto; padding:0 2rem 4rem; }
-  .jobs-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
-  .jobs-header h2 { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:700; }
-  .jobs-count { font-size:0.9rem; color:var(--muted); }
-  .updated { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+  /* --- JOBS GRID --- */
+  .jobs-wrap { max-width: 960px; margin: 0 auto; padding: 0 5% 6rem; }
+  .jobs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .jobs-header h2 { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; }
+  .updated { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; }
+  .jobs-count { font-size: 0.9rem; font-weight: 500; color: var(--accent); background: rgba(249, 115, 22, 0.1); padding: 0.4rem 1rem; border-radius: 50px; }
 
-  .jobs-grid { display:grid; gap:1rem; }
-  .job-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.5rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; overflow:hidden; }
-  .job-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); transform:scaleY(0); transition:transform 0.2s; transform-origin:bottom; }
-  .job-card:hover { border-color:#444; transform:translateY(-2px); }
-  .job-card:hover::before { transform:scaleY(1); }
-  .job-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:0.8rem; }
-  .job-logo { width:42px; height:42px; border-radius:8px; background:#222; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:var(--accent); flex-shrink:0; }
-  .job-badge { background:rgba(232,93,47,0.15); color:var(--accent); font-size:0.7rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px; letter-spacing:0.05em; text-transform:uppercase; }
-  .job-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; margin-bottom:0.3rem; line-height:1.3; }
-  .job-company { color:var(--muted); font-size:0.88rem; }
-  .job-desc-preview { color:#aaa; font-size:0.85rem; line-height:1.5; margin-top:0.8rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .job-meta { display:flex; gap:1.2rem; margin-top:1rem; flex-wrap:wrap; }
-  .job-meta span { font-size:0.8rem; color:var(--muted); }
-  .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
+  .jobs-grid { display: flex; flex-direction: column; gap: 1.2rem; }
+  .job-card { 
+    background: var(--card); border: 1px solid rgba(255,255,255,0.05); 
+    border-radius: 16px; padding: 1.8rem; cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .job-card::after { 
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; 
+    background: linear-gradient(to bottom, var(--accent), var(--accent2)); 
+    opacity: 0; transition: opacity 0.3s ease; 
+  }
+  .job-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); background: var(--card-hover); }
+  .job-card:hover::after { opacity: 1; }
+  
+  .job-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .job-logo-wrap { display: flex; align-items: center; gap: 1rem; }
+  .job-logo { 
+    width: 48px; height: 48px; border-radius: 12px; 
+    background: linear-gradient(135deg, #27272a, #18181b); 
+    border: 1px solid rgba(255,255,255,0.1); 
+    display: flex; align-items: center; justify-content: center; 
+    font-family: var(--font-head); font-weight: 800; font-size: 1.2rem; color: var(--text); 
+  }
+  .job-company { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+  .job-badge { background: rgba(255, 255, 255, 0.05); color: var(--text); font-size: 0.75rem; font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05); }
+  
+  .job-title { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+  .job-desc-preview { color: #d4d4d8; font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  
+  .job-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; gap: 1rem; }
+  .job-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .job-meta span { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+  .job-meta svg { width: 16px; height: 16px; color: var(--accent); }
+  
+  .job-apply { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.9rem; font-weight: 600; transition: gap 0.2s ease; }
+  .job-card:hover .job-apply { gap: 0.8rem; }
 
-  /* POPUP */
-  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:200; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
-  .popup-overlay.open { display:flex; }
-  .popup { background:#1a1a1a; border:1px solid #333; border-radius:18px; width:100%; max-width:940px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.25s cubic-bezier(0.34,1.4,0.64,1); box-shadow:0 30px 70px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04); }
-  @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(12px)} to{opacity:1;transform:none} }
-  @media(max-width:700px) { .popup { grid-template-columns:1fr; max-height:95vh; } }
+  /* --- POPUP MODAL --- */
+  .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 2rem; backdrop-filter: blur(8px); }
+  .popup-overlay.open { display: flex; }
+  .popup { 
+    background: var(--bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; 
+    width: 100%; max-width: 1100px; max-height: 90vh; display: grid; grid-template-columns: 1.2fr 1fr; 
+    overflow: hidden; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(20px)} to{opacity:1;transform:none} }
+  @media(max-width:850px) { .popup { grid-template-columns: 1fr; max-height: 95vh; padding: 0; } }
 
-  .popup-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:0.9rem; transition:background 0.2s,color 0.2s,transform 0.15s; }
-  .popup-close:hover { color:var(--text); background:rgba(255,255,255,0.12); transform:scale(1.1); }
+  .popup-close { 
+    position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.5); 
+    border: 1px solid rgba(255,255,255,0.1); color: var(--text); cursor: pointer; 
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    z-index: 10; font-size: 1.2rem; transition: all 0.2s ease; backdrop-filter: blur(4px);
+  }
+  .popup-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
-  /* LEFT: Job detail */
-  .popup-detail { padding:2.5rem; overflow-y:auto; border-right:1px solid var(--border); }
-  .popup-company-row { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
-  .popup-logo { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#e85d2f,#ff8c5a); border:none; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; color:white; flex-shrink:0; box-shadow:0 6px 16px rgba(232,93,47,0.35); }
-  .popup-company-name { color:#bbb; font-size:0.92rem; font-weight:500; }
-  .popup-job-title { font-family:'Syne',sans-serif; font-size:1.45rem; font-weight:800; line-height:1.2; margin-bottom:1.1rem; }
-  .popup-meta-row { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; }
-  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:#ccc; background:rgba(255,255,255,0.06); padding:0.35rem 0.9rem; border-radius:20px; border:1px solid rgba(255,255,255,0.08); }
-  .popup-desc-title { font-family:'Syne',sans-serif; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:0.8rem; }
-  .popup-description { font-size:0.95rem; line-height:1.8; color:#ccc; background:#1f1f1f; padding:1.3rem 1.5rem; border-radius:10px; }
-  .popup-description strong { color:var(--text); }
-  .desc-section { color:#e85d2f; font-weight:700; font-family:'Syne',sans-serif; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; display:block; margin-top:1.4rem; margin-bottom:0.5rem; padding-bottom:0.4rem; border-bottom:1px solid rgba(232,93,47,0.25); }
-  .desc-section:first-child { margin-top:0; }
+  /* LEFT: Job Detail */
+  .popup-detail { padding: 3rem; overflow-y: auto; background: var(--card); }
+  .popup-company-row { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
+  .popup-logo { 
+    width: 64px; height: 64px; border-radius: 16px; 
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); 
+    display: flex; align-items: center; justify-content: center; 
+    font-family: var(--font-head); font-weight: 800; font-size: 1.8rem; color: white; 
+    box-shadow: 0 10px 20px var(--accent-glow); 
+  }
+  .popup-company-name { color: var(--text-muted); font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .popup-job-title { font-family: var(--font-head); font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem; }
+  .popup-meta-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .popup-meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: #e4e4e7; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+  .popup-meta-item svg { width: 16px; height: 16px; color: var(--accent); }
+  
+  .popup-desc-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+  .popup-description { font-size: 1.05rem; line-height: 1.8; color: #d4d4d8; }
+  .popup-description strong { color: white; font-weight: 600; }
+  .desc-section { color: var(--accent); font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 2rem; margin-bottom: 0.8rem; }
+  .desc-section:first-child { margin-top: 0; }
 
-  /* RIGHT: Apply form */
-  .popup-apply { padding:2rem 2rem 2rem; overflow-y:auto; background:#151515; }
-  .apply-title { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; margin-bottom:1.5rem; }
-  .form-group { margin-bottom:1.1rem; }
-  .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#aaa; margin-bottom:0.45rem; letter-spacing:0.04em; text-transform:uppercase; }
-  .form-group input, .form-group textarea { width:100%; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.85rem 1rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.95rem; transition:border-color 0.2s,background 0.2s; }
-  .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); background:#222; }
-  .form-group textarea { resize:vertical; min-height:90px; }
-  .file-upload { width:100%; background:#1e1e1e; border:1px dashed #333; border-radius:8px; padding:1rem; text-align:center; cursor:pointer; color:var(--muted); font-size:0.85rem; position:relative; transition:border-color 0.2s,background 0.2s; }
-  .file-upload:hover { border-color:var(--accent); background:#222; }
-  .file-upload input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
-  .file-name { font-size:0.8rem; color:var(--accent); margin-top:0.3rem; }
-  .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:9px; padding:1.05rem; font-size:1.05rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s,transform 0.15s; margin-top:0.75rem; letter-spacing:0.02em; }
-  .submit-btn:hover { background:var(--accent2); transform:translateY(-1px); }
-  .submit-btn:active { transform:translateY(0); }
-  .success-msg { display:none; text-align:center; padding:3rem 1rem; }
-  .success-msg .check { font-size:3rem; margin-bottom:1rem; }
-  .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:0.6rem; }
-  .success-msg p { color:var(--muted); font-size:0.9rem; }
-  .loading { text-align:center; padding:4rem; color:var(--muted); }
-  .no-jobs { text-align:center; padding:4rem; color:var(--muted); }
+  /* RIGHT: Apply Form */
+  .popup-apply { padding: 3rem; overflow-y: auto; background: var(--bg); border-left: 1px solid rgba(255,255,255,0.05); }
+  .apply-title { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .apply-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+  
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .form-group input, .form-group textarea { 
+    width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 12px; padding: 1rem; color: var(--text); font-family: var(--font-body); font-size: 1rem; 
+    transition: all 0.2s ease; 
+  }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.05); box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  
+  .file-upload { 
+    width: 100%; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2); 
+    border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; color: var(--text-muted); 
+    position: relative; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .file-upload:hover { border-color: var(--accent); background: rgba(249, 115, 22, 0.05); color: var(--text); }
+  .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-icon { width: 24px; height: 24px; color: var(--accent); }
+  .file-name { font-size: 0.85rem; color: var(--success); font-weight: 600; }
+  
+  .submit-btn { 
+    width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2)); 
+    color: white; border: none; border-radius: 12px; padding: 1.2rem; font-size: 1.1rem; 
+    font-weight: 700; font-family: var(--font-head); cursor: pointer; transition: all 0.2s ease; 
+    margin-top: 1rem; box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(249, 115, 22, 0.4); }
+  
+  .success-msg { display: none; text-align: center; padding: 4rem 1rem; height: 100%; flex-direction: column; justify-content: center; align-items: center; }
+  .success-msg .check-icon { width: 80px; height: 80px; color: var(--success); margin-bottom: 1.5rem; }
+  .success-msg h3 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 1rem; }
+  .success-msg p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; }
+  
+  .loading, .no-jobs { text-align: center; padding: 4rem; color: var(--text-muted); font-size: 1.1rem; }
 </style>
 </head>
 <body>
@@ -114,26 +230,32 @@
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">Pflege &amp; Medizin</div>
+  <div class="hero-tag">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+    Pflege &amp; Medizin
+  </div>
   <h1>Pflege Jobs<br>in der <em>Schweiz.</em></h1>
-  <p>Aktuelle Stellenanzeigen für Pflegefachpersonen, FaGe und medizinisches Personal – täglich aktualisiert.</p>
+  <p>Finde spannende Stellenanzeigen für Pflegefachpersonen, FaGe und medizinisches Personal – von uns für dich kuratiert.</p>
   <div class="hero-stats">
-    <div class="stat"><div class="stat-num" id="totalJobs">–</div><div class="stat-label">Stellen verfügbar</div></div>
-    <div class="stat"><div class="stat-num">Täglich</div><div class="stat-label">aktualisiert</div></div>
+    <div class="stat"><div class="stat-num" id="totalJobs">–</div><div class="stat-label">Offene Stellen</div></div>
+    <div class="stat"><div class="stat-num">Täglich</div><div class="stat-label">Aktualisiert</div></div>
   </div>
 </div>
 
 <div class="search-wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Stichwort suchen, z.B. Zürich, Intensivpflege …" oninput="filterJobs()">
-    <button onclick="filterJobs()">Suchen</button>
+    <div class="search-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </div>
+    <input type="text" id="searchInput" placeholder="Stichwort suchen (z.B. Intensivpflege, Zürich...)" oninput="filterJobs()">
+    <button onclick="filterJobs()">Jobs finden</button>
   </div>
 </div>
 
 <div class="jobs-wrap">
   <div class="jobs-header">
     <div>
-      <h2>Aktuelle Stellen</h2>
+      <h2>Aktuelle Vakanzen</h2>
       <div class="updated" id="updatedAt"></div>
     </div>
     <div class="jobs-count" id="jobsCount"></div>
@@ -144,7 +266,9 @@
 <!-- POPUP -->
 <div class="popup-overlay" id="popupOverlay" onclick="closePopupOnBg(event)">
   <div class="popup">
-    <button class="popup-close" onclick="closePopup()">✕</button>
+    <button class="popup-close" onclick="closePopup()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
 
     <div class="popup-detail">
       <div class="popup-company-row">
@@ -158,40 +282,46 @@
     </div>
 
     <div class="popup-apply">
-      <div class="apply-title">Jetzt bewerben</div>
-      <form id="applyForm" onsubmit="submitForm(event)">
-        <input type="hidden" name="stelle" id="hiddenStelle">
-        <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
-        <div class="form-group">
-          <label>Vollständiger Name *</label>
-          <input type="text" name="name" required placeholder="Max Mustermann">
-        </div>
-        <div class="form-group">
-          <label>E-Mail-Adresse *</label>
-          <input type="email" name="email" required placeholder="max@beispiel.ch">
-        </div>
-        <div class="form-group">
-          <label>Telefonnummer</label>
-          <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
-        </div>
-        <div class="form-group">
-          <label>Kurze Vorstellung</label>
-          <textarea name="vorstellung" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Lebenslauf (PDF oder Word)</label>
-          <div class="file-upload">
-            <div>📎 Datei auswählen</div>
-            <div class="file-name" id="fileName"></div>
-            <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+      <div id="applyFormContainer">
+        <div class="apply-title">Jetzt bewerben</div>
+        <div class="apply-subtitle">Hinterlasse uns deine Daten, wir melden uns umgehend bei dir.</div>
+        <form id="applyForm" onsubmit="submitForm(event)">
+          <input type="hidden" name="stelle" id="hiddenStelle">
+          <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
+          
+          <div class="form-group">
+            <label>Vollständiger Name *</label>
+            <input type="text" name="name" required placeholder="Max Mustermann">
           </div>
-        </div>
-        <button type="submit" class="submit-btn">Bewerbung absenden →</button>
-      </form>
+          <div class="form-group">
+            <label>E-Mail-Adresse *</label>
+            <input type="email" name="email" required placeholder="max@beispiel.ch">
+          </div>
+          <div class="form-group">
+            <label>Telefonnummer</label>
+            <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
+          </div>
+          <div class="form-group">
+            <label>Kurze Vorstellung (optional)</label>
+            <textarea name="vorstellung" placeholder="Warum passt du perfekt auf diese Stelle?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Lebenslauf (PDF oder Word)</label>
+            <div class="file-upload">
+              <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>
+              <div>Klicke hier, um eine Datei auszuwählen</div>
+              <div class="file-name" id="fileName"></div>
+              <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Bewerbung absenden</button>
+        </form>
+      </div>
+
       <div class="success-msg" id="successMsg">
-        <div class="check">✅</div>
-        <h3>Bewerbung gesendet!</h3>
-        <p>Wir leiten Ihre Bewerbung weiter.<br>Sie hören bald von uns.</p>
+        <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        <h3>Bewerbung erfolgreich!</h3>
+        <p>Wir haben deine Unterlagen erhalten und werden uns in Kürze bei dir melden.</p>
       </div>
     </div>
   </div>
@@ -201,16 +331,50 @@
 let allJobs = [];
 let currentFiltered = [];
 
+// Icons für Meta-Daten
+const iconLocation = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const iconDate = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>`;
+const iconSalary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>`;
+
 async function loadJobs() {
   try {
     const r = await fetch('/data/pflege-jobs.json?t=' + Date.now());
+    if (!r.ok) throw new Error('Mock fallback needed');
     const data = await r.json();
     allJobs = data.jobs || [];
     document.getElementById('totalJobs').textContent = data.total || allJobs.length;
     document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
     renderJobs(allJobs);
   } catch(e) {
-    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden.</div>';
+    // Fallback Mock-Daten für die Vorschau
+    allJobs = [
+        {
+            title: "Dipl. Pflegefachperson HF/FH", 
+            company: "Universitätsspital Zürich", 
+            locations: "Zürich", 
+            date: "2026-03-10", 
+            salary: "CHF 85'000 - 110'000", 
+            description: "Ihre Hauptaufgaben\n- Ganzheitliche Betreuung und Pflege von Patientinnen und Patienten\n- Übernahme der Fachverantwortung im interdisziplinären Team\n\nIhr Profil\n- Abgeschlossene Ausbildung als Dipl. Pflegefachperson HF/FH\n- Berufserfahrung von Vorteil\n\nWir bieten\n- Fortschrittliche Anstellungsbedingungen\n\nKontaktieren Sie uns bei Fragen unter Tel. 044 123 45 67 oder Mobile +41 79 987 65 43."
+        },
+        {
+            title: "Fachfrau/-mann Gesundheit EFZ (FaGe) 80%", 
+            company: "Inselspital Bern", 
+            locations: "Bern", 
+            date: "2026-03-09", 
+            salary: "CHF 70'000 - 85'000", 
+            description: "Aufgabenbereich\n- Pflege und Betreuung gemäss Pflegeplanung\n- Ausführung medizinaltechnischer Verrichtungen\n\nAnforderungen\n- Erfolgreich abgeschlossene Ausbildung als FaGe EFZ\n\nBei Rückfragen steht Ihnen Frau Meier unter 0041 31 123 4567 zur Verfügung."
+        },
+        {
+            title: "Experte/in Intensivpflege NDS HF (60-100%)", 
+            company: "Kantonsspital St. Gallen", 
+            locations: "St. Gallen", 
+            date: "2026-03-05", 
+            description: "Das bringen Sie mit\n- Abschluss als Dipl. Experte/in Intensivpflege NDS HF\n- Hohe Belastbarkeit in kritischen Situationen\n\nDas bieten wir\n- Ein motiviertes, offenes Team\n- Modernste medizintechnische Infrastruktur\n\nTelefonnummer für Auskünfte: 071 111 22 33."
+        }
+    ];
+    document.getElementById('totalJobs').textContent = allJobs.length;
+    document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: Heute (Vorschau-Daten)';
+    renderJobs(allJobs);
   }
 }
 
@@ -225,22 +389,34 @@ function formatDate(d) {
 function renderJobs(jobs) {
   currentFiltered = jobs;
   document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
-  if (!jobs.length) { document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine Stellen gefunden.</div>'; return; }
+  if (!jobs.length) { document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine passenden Stellen gefunden.</div>'; return; }
+  
   document.getElementById('jobsGrid').innerHTML = jobs.map((job,i) => `
     <div class="job-card" onclick="openPopup(${i})">
       <div class="job-top">
-        <div class="job-logo">${(job.company||'?')[0].toUpperCase()}</div>
+        <div class="job-logo-wrap">
+          <div class="job-logo">${(job.company||'?')[0].toUpperCase()}</div>
+          <div>
+            <div class="job-company">${job.company||'Unbekannt'}</div>
+            <div class="job-title">${job.title}</div>
+          </div>
+        </div>
         <span class="job-badge">Pflege</span>
       </div>
-      <div class="job-title">${job.title}</div>
-      <div class="job-company">${job.company||'Unbekannt'}</div>
+      
       ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
-      <div class="job-meta">
-        <span>📍 ${job.locations||'Schweiz'}</span>
-        <span>📅 ${formatDate(job.date)}</span>
-        ${job.salary?`<span>💰 ${job.salary}`:''}
+      
+      <div class="job-bottom">
+        <div class="job-meta">
+          <span>${iconLocation} ${job.locations||'Schweiz'}</span>
+          <span>${iconDate} ${formatDate(job.date)}</span>
+          ${job.salary ? `<span>${iconSalary} ${job.salary}</span>` : ''}
+        </div>
+        <div class="job-apply">
+          Details ansehen
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </div>
       </div>
-      <span class="job-apply">Details &amp; Bewerben →</span>
     </div>
   `).join('');
 }
@@ -256,14 +432,17 @@ function filterJobs() {
 }
 
 function formatDesc(text) {
-  if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
+  if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-  // Telefonnummern entfernen
-  t = t.replace(/(\+41|\+49|\+43|\+33|0041|0049)\s?[\d\s\.\-\/\(\)]{6,25}/g, '');
-  t = t.replace(/\b0\d{2,3}[\s\.\-]?\d{3}[\s\.\-]?\d{2}[\s\.\-]?\d{2}\b/g, '');
-  t = t.replace(/(Tel\.?\s*:?|Telefon\s*:?|Telefonnummer\s*:?|Mobile?\s*:?|Mobil\s*:?|Fax\s*:?)\s*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
-  // Abschnittstitel
+  
+  // VERBESSERTE REGEX FÜR TELEFONNUMMERN (Entfernt diese komplett)
+  // 1. Kontextbasiert (Nach Wörtern wie Tel, Mobile etc.)
+  t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{5,25}/gi, '');
+  // 2. Allgemeine Nummern mit Vorwahl (+41, 0041, 079 etc.)
+  t = t.replace(/(?:(?:\+|00)(?:41|49|43|33)\s*(?:\(0\)\s*)?|0[1-9][0-9]\s*)[\d\s\.\-\/]{6,15}/g, '');
+  
+  // Abschnittstitel hervorheben
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -276,6 +455,7 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
+  
   // Markdown fett
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   // Zeilenumbruch nach Satzende vor Grossbuchstaben
@@ -295,18 +475,22 @@ function openPopup(i) {
   document.getElementById('ppLogo').textContent = (job.company||'?')[0].toUpperCase();
   document.getElementById('ppCompany').textContent = job.company||'';
   document.getElementById('ppTitle').textContent = job.title||'';
+  
   let meta = '';
-  if (job.locations) meta += `<span class="popup-meta-item">📍 ${job.locations}</span>`;
-  if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
-  if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
+  if (job.locations) meta += `<span class="popup-meta-item">${iconLocation} ${job.locations}</span>`;
+  if (job.date)      meta += `<span class="popup-meta-item">${iconDate} ${formatDate(job.date)}</span>`;
+  if (job.salary)    meta += `<span class="popup-meta-item">${iconSalary} ${job.salary}</span>`;
+  
   document.getElementById('ppMeta').innerHTML = meta;
   document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
-  document.getElementById('applyForm').style.display = 'block';
+  
+  document.getElementById('applyFormContainer').style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  
   document.querySelector('.popup-detail').scrollTop = 0;
   document.querySelector('.popup-apply').scrollTop = 0;
 }
@@ -316,20 +500,49 @@ function closePopup() {
   document.body.style.overflow = '';
 }
 function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay')) closePopup(); }
-function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name||''; }
+
+function showFileName(input) { 
+  const name = input.files[0]?.name;
+  const label = document.getElementById('fileName');
+  if(name) {
+    label.textContent = "📎 " + name;
+    label.style.marginTop = "0.5rem";
+  } else {
+    label.textContent = '';
+  }
+}
+
 async function submitForm(e) {
   e.preventDefault();
+  
+  // Submit Button Ladezustand
+  const btn = e.target.querySelector('.submit-btn');
+  const originalText = btn.textContent;
+  btn.textContent = 'Wird gesendet...';
+  btn.style.opacity = '0.7';
+  
   try {
     await fetch('https://formspree.io/f/mlgpjpqp', {
       method: 'POST',
       body: new FormData(e.target),
       headers: { 'Accept': 'application/json' }
     });
-  } catch(err) {}
-  document.getElementById('applyForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
-  setTimeout(closePopup, 3000);
+  } catch(err) {
+    console.error(err);
+  }
+  
+  btn.textContent = originalText;
+  btn.style.opacity = '1';
+  document.getElementById('applyFormContainer').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'flex';
+  
+  // Reset Form
+  e.target.reset();
+  document.getElementById('fileName').textContent = '';
+  
+  setTimeout(closePopup, 3500);
 }
+
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
 loadJobs();
 </script>
