@@ -1,11 +1,10 @@
 import requests
-import cloudscraper
 import json
 import os
 import re
 import time
 from datetime import datetime
-from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
@@ -16,62 +15,63 @@ KATEGORIEN = [
     { 'name': 'sap',    'keywords': 'SAP',    'location': 'Schweiz', 'output': 'data/sap-jobs.json' },
 ]
 
-# cloudscraper-Session für Anti-Bot-Schutz (jobviewtrack.com, careerjet.ch)
-scraper = cloudscraper.create_scraper(
-    browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True}
-)
-
-def clean_html_to_text(html_fragment):
-    """Konvertiert HTML-Fragment zu lesbarem Text."""
-    text = re.sub(r'<script[^>]*>.*?</script>', '', html_fragment, flags=re.DOTALL)
-    text = re.sub(r'<style[^>]*>.*?</style>', '', text, flags=re.DOTALL)
-    text = re.sub(r'<li[^>]*>', '• ', text)
-    text = re.sub(r'</li>', '\n', text)
-    text = re.sub(r'<br\s*/?>', '\n', text)
-    text = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\n\1\n', text)
-    text = re.sub(r'<p[^>]*>', '\n', text)
-    text = re.sub(r'</p>', '\n', text)
-    text = re.sub(r'<strong[^>]*>(.*?)</strong>', r'**\1**', text)
-    text = re.sub(r'<b[^>]*>(.*?)</b>', r'**\1**', text)
-    text = re.sub(r'<[^>]+>', '', text)
-    text = re.sub(r'[ \t]+', ' ', text)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    return text.strip()
-
-def extract_careerjet_description(html):
-    """Extrahiert Beschreibung von Careerjet: Text zwischen </h1> und 'Arbeitssuchende'."""
-    match = re.search(r'</h1>(.*?)Arbeitssuchende', html, re.DOTALL)
-    if match:
-        return clean_html_to_text(match.group(1))
-    return None
-
-def extract_longest_text_block(html):
-    """Extrahiert den längsten zusammenhängenden Textblock aus <p> oder <div> Tags."""
-    soup = BeautifulSoup(html, 'html.parser')
-    for tag in soup.find_all(['script', 'style', 'nav', 'header', 'footer']):
-        tag.decompose()
-
-    longest = ''
-    for tag in soup.find_all(['p', 'div']):
-        text = tag.get_text(separator='\n', strip=True)
-        if len(text) > len(longest):
-            longest = text
-
-    return longest if len(longest) > 100 else None
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36',
+    'Accept-Language': 'de-CH,de;q=0.9',
+    'Accept': 'text/html,application/xhtml+xml',
+}
 
 def fetch_full_description(job_url):
-    """Folgt dem jobviewtrack.com Redirect mit cloudscraper und holt die volle Beschreibung."""
+    """Folgt dem Redirect und holt die volle Beschreibung von der Zielseite."""
     try:
-        r = scraper.get(job_url, timeout=15, allow_redirects=True)
+        # Redirect zu Careerjet.ch oder Arbeitgeber-Seite folgen
+        r = requests.get(job_url, headers=HEADERS, timeout=15, allow_redirects=True)
         final_url = r.url
         html = r.text
 
+        # Falls wir auf Careerjet gelandet sind
         if 'careerjet.ch' in final_url or 'careerjet.com' in final_url:
-            desc = extract_careerjet_description(html)
+            # Beschreibung aus Careerjet-Jobseite extrahieren
+            # Alles nach dem h1 bis zu einem bestimmten Abschnitt
+            match = re.search(r'<h1[^>]*>.*?</h1>(.*?)(?:<div[^>]*class="[^"]*apply|<footer|Arbeitssuchende)', html, re.DOTALL)
+            if match:
+                desc = match.group(1)
+            else:
+                # Breiter suchen
+                match = re.search(r'(?:Vollzeit|Teilzeit|Unbefristet)[^<]*</[^>]+>(.*?)(?:Arbeitssuchende|<footer)', html, re.DOTALL)
+                desc = match.group(1) if match else html
         else:
-            desc = extract_longest_text_block(html)
+            # Allgemeine Extraktion für andere Seiten
+            # Versuche den Hauptinhalt zu finden
+            for pattern in [
+                r'<article[^>]*>(.*?)</article>',
+                r'<div[^>]*class="[^"]*job[^"]*description[^"]*"[^>]*>(.*?)</div>',
+                r'<div[^>]*class="[^"]*description[^"]*"[^>]*>(.*?)</div>',
+            ]:
+                match = re.search(pattern, html, re.DOTALL | re.IGNORECASE)
+                if match:
+                    desc = match.group(1)
+                    break
+            else:
+                return None
 
-        if desc and len(desc) > 300:
+        # HTML zu lesbarem Text konvertieren
+        desc = re.sub(r'<script[^>]*>.*?</script>', '', desc, flags=re.DOTALL)
+        desc = re.sub(r'<style[^>]*>.*?</style>', '', desc, flags=re.DOTALL)
+        desc = re.sub(r'<li[^>]*>', '• ', desc)
+        desc = re.sub(r'</li>', '\n', desc)
+        desc = re.sub(r'<br\s*/?>', '\n', desc)
+        desc = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\n\1\n', desc)
+        desc = re.sub(r'<p[^>]*>', '\n', desc)
+        desc = re.sub(r'</p>', '\n', desc)
+        desc = re.sub(r'<strong[^>]*>(.*?)</strong>', r'**\1**', desc)
+        desc = re.sub(r'<b[^>]*>(.*?)</b>', r'**\1**', desc)
+        desc = re.sub(r'<[^>]+>', '', desc)
+        desc = re.sub(r'[ \t]+', ' ', desc)
+        desc = re.sub(r'\n{3,}', '\n\n', desc)
+        desc = desc.strip()
+
+        if len(desc) > 300:
             return desc
         return None
 
@@ -121,20 +121,17 @@ def fetch_jobs(keywords, location):
             break
 
     # Volle Beschreibungen laden
-    print(f"\n  Lade volle Beschreibungen für {len(all_jobs)} Jobs...")
-    success = 0
+    print(f"\n  Lade Beschreibungen für {len(all_jobs)} Jobs...")
     for i, job in enumerate(all_jobs):
-        print(f"  [{i+1}/{len(all_jobs)}] {job['title'][:50]}...")
+        print(f"  [{i+1}/{len(all_jobs)}] {job['title'][:45]}...")
         full = fetch_full_description(job['url'])
         if full:
             job['description'] = full
-            success += 1
             print(f"    ✅ {len(full)} Zeichen")
         else:
             print(f"    ⚠️  Kurzbeschreibung behalten")
         time.sleep(0.5)
 
-    print(f"\n  Ergebnis: {success}/{len(all_jobs)} volle Beschreibungen geladen")
     return all_jobs
 
 def main():
@@ -152,7 +149,7 @@ def main():
         }
         with open(kat['output'], 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
-        print(f"Gespeichert: {kat['output']}")
+        print(f"Gespeichert: {kat['output']} ✅")
 
 if __name__ == '__main__':
     main()
