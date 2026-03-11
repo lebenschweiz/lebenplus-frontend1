@@ -7,6 +7,7 @@ import anthropic
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
 PAGES       = 10
+MAX_JOBS    = 10
 
 KATEGORIEN = [
     { 'name': 'pflege', 'keywords': 'Pflege', 'location': 'Schweiz', 'output': 'data/pflege-jobs.json' },
@@ -56,6 +57,9 @@ def fetch_jobs(keywords, location):
     seen_urls = set()
 
     for page in range(1, PAGES + 1):
+        if len(all_jobs) >= MAX_JOBS:
+            break
+
         params = { 'keywords': keywords, 'location': location, 'pagesize': PAGE_SIZE, 'page': page }
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
@@ -71,6 +75,9 @@ def fetch_jobs(keywords, location):
                 break
 
             for job in jobs:
+                if len(all_jobs) >= MAX_JOBS:
+                    break
+
                 url = job.get('url', '')
                 if url in seen_urls:
                     continue
