@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Abhängigkeiten installieren
-        run: pip install requests
+        run: pip install requests anthropic
 
       - name: Render aufwecken (90 Sek warten)
         run: |
@@ -32,6 +32,8 @@ jobs:
           echo "Render bereit"
 
       - name: Scraper ausführen
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scraper.py
 
       - name: Änderungen committen und pushen
