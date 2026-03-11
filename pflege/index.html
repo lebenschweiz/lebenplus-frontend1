@@ -174,7 +174,7 @@
   .popup-desc-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
   .popup-description { font-size: 1.05rem; line-height: 1.8; color: #d4d4d8; }
   .popup-description strong { color: white; font-weight: 600; }
-  .desc-section { color: var(--accent); font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 2rem; margin-bottom: 0.8rem; }
+  .desc-section { color: #e85d2f; font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 1.8rem; margin-bottom: 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(232,93,47,0.2); }
   .desc-section:first-child { margin-top: 0; }
 
   /* RIGHT: Apply Form */
@@ -436,10 +436,8 @@ function formatDesc(text) {
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
   
-  // VERBESSERTE REGEX FÜR TELEFONNUMMERN (Entfernt diese komplett)
-  // 1. Kontextbasiert (Nach Wörtern wie Tel, Mobile etc.)
+  // Telefonnummern entfernen
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{5,25}/gi, '');
-  // 2. Allgemeine Nummern mit Vorwahl (+41, 0041, 079 etc.)
   t = t.replace(/(?:(?:\+|00)(?:41|49|43|33)\s*(?:\(0\)\s*)?|0[1-9][0-9]\s*)[\d\s\.\-\/]{6,15}/g, '');
   
   // Abschnittstitel hervorheben
@@ -459,7 +457,7 @@ function formatDesc(text) {
   // Markdown fett
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   // Zeilenumbruch nach Satzende vor Grossbuchstaben
-  t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br>$2');
+  t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br><br>$2');
   // Doppelte Leerzeilen
   t = t.replace(/\n\n+/g, '<br><br>');
   // Aufzählungen
@@ -515,7 +513,6 @@ function showFileName(input) {
 async function submitForm(e) {
   e.preventDefault();
   
-  // Submit Button Ladezustand
   const btn = e.target.querySelector('.submit-btn');
   const originalText = btn.textContent;
   btn.textContent = 'Wird gesendet...';
@@ -536,7 +533,6 @@ async function submitForm(e) {
   document.getElementById('applyFormContainer').style.display = 'none';
   document.getElementById('successMsg').style.display = 'flex';
   
-  // Reset Form
   e.target.reset();
   document.getElementById('fileName').textContent = '';
   
