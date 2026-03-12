@@ -113,18 +113,32 @@ def main():
     print(f"Starte Scraper – {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     os.makedirs('data', exist_ok=True)
 
+    all_combined = []
+    now_str = datetime.now().strftime('%d.%m.%Y %H:%M')
+
     for kat in KATEGORIEN:
         print(f"\n=== {kat['name'].upper()} ===")
         jobs = fetch_jobs(kat['keywords'], kat['location'])
         print(f"\nGesamt: {len(jobs)} Jobs")
         output = {
-            'updated': datetime.now().strftime('%d.%m.%Y %H:%M'),
+            'updated': now_str,
             'total':   len(jobs),
             'jobs':    jobs,
         }
         with open(kat['output'], 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
         print(f"Gespeichert: {kat['output']}")
+        all_combined.extend(jobs)
+
+    # Kombinierte jobs.json für das Frontend
+    combined = {
+        'updated': now_str,
+        'total':   len(all_combined),
+        'jobs':    all_combined,
+    }
+    with open('data/jobs.json', 'w', encoding='utf-8') as f:
+        json.dump(combined, f, ensure_ascii=False, indent=2)
+    print(f"\nKombinierte Datei gespeichert: data/jobs.json ({len(all_combined)} Jobs)")
 
 if __name__ == '__main__':
     main()
