@@ -66,7 +66,10 @@
   .popup-close:hover { color:var(--text); background:rgba(255,255,255,0.12); transform:scale(1.1); }
 
   /* LEFT: Job detail */
-  .popup-detail { padding:2.5rem; overflow-y:auto; border-right:1px solid var(--border); }
+  .popup-detail { padding:2.5rem; overflow-y:auto; max-height:90vh; scrollbar-width:thin; scrollbar-color:#e85d2f #1a1a1a; border-right:1px solid var(--border); }
+  .popup-detail::-webkit-scrollbar { width: 6px; }
+  .popup-detail::-webkit-scrollbar-track { background: #1a1a1a; }
+  .popup-detail::-webkit-scrollbar-thumb { background: #e85d2f; border-radius: 3px; }
   .popup-company-row { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
   .popup-logo { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#e85d2f,#ff8c5a); border:none; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; color:white; flex-shrink:0; box-shadow:0 6px 16px rgba(232,93,47,0.35); }
   .popup-company-name { color:#bbb; font-size:0.92rem; font-weight:500; }
@@ -259,11 +262,9 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-  // Telefonnummern entfernen
   t = t.replace(/(\+41|\+49|\+43|\+33|0041|0049)\s?[\d\s\.\-\/\(\)]{6,25}/g, '');
   t = t.replace(/\b0\d{2,3}[\s\.\-]?\d{3}[\s\.\-]?\d{2}[\s\.\-]?\d{2}\b/g, '');
   t = t.replace(/(Tel\.?\s*:?|Telefon\s*:?|Telefonnummer\s*:?|Mobile?\s*:?|Mobil\s*:?|Fax\s*:?)\s*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
-  // Abschnittstitel hervorheben
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -276,15 +277,10 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
-  // Markdown fett
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // Zeilenumbruch nach Satzende vor Grossbuchstaben
   t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br><br>$2');
-  // Doppelte Leerzeilen
   t = t.replace(/\n\n+/g, '<br><br>');
-  // Aufzählungen
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
-  // Einzelne Zeilenumbrüche
   t = t.replace(/\n/g, '<br>');
   return t;
 }
