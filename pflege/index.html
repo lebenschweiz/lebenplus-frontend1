@@ -156,7 +156,10 @@
   .popup-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
   /* LEFT: Job Detail */
-  .popup-detail { padding: 3rem; overflow-y: auto; background: var(--card); }
+  .popup-detail { padding: 3rem; overflow-y: auto; max-height: 90vh; scrollbar-width: thin; scrollbar-color: #e85d2f #1a1a1a; background: var(--card); }
+  .popup-detail::-webkit-scrollbar { width: 6px; }
+  .popup-detail::-webkit-scrollbar-track { background: #1a1a1a; }
+  .popup-detail::-webkit-scrollbar-thumb { background: #e85d2f; border-radius: 3px; }
   .popup-company-row { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
   .popup-logo { 
     width: 64px; height: 64px; border-radius: 16px; 
@@ -346,7 +349,6 @@ async function loadJobs() {
     document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
     renderJobs(allJobs);
   } catch(e) {
-    // Fallback Mock-Daten für die Vorschau
     allJobs = [
         {
             title: "Dipl. Pflegefachperson HF/FH", 
@@ -354,7 +356,7 @@ async function loadJobs() {
             locations: "Zürich", 
             date: "2026-03-10", 
             salary: "CHF 85'000 - 110'000", 
-            description: "Ihre Hauptaufgaben\n- Ganzheitliche Betreuung und Pflege von Patientinnen und Patienten\n- Übernahme der Fachverantwortung im interdisziplinären Team\n\nIhr Profil\n- Abgeschlossene Ausbildung als Dipl. Pflegefachperson HF/FH\n- Berufserfahrung von Vorteil\n\nWir bieten\n- Fortschrittliche Anstellungsbedingungen\n\nKontaktieren Sie uns bei Fragen unter Tel. 044 123 45 67 oder Mobile +41 79 987 65 43."
+            description: "Ihre Hauptaufgaben\n- Ganzheitliche Betreuung und Pflege von Patientinnen und Patienten\n- Übernahme der Fachverantwortung im interdisziplinären Team\n\nIhr Profil\n- Abgeschlossene Ausbildung als Dipl. Pflegefachperson HF/FH\n- Berufserfahrung von Vorteil\n\nWir bieten\n- Fortschrittliche Anstellungsbedingungen"
         },
         {
             title: "Fachfrau/-mann Gesundheit EFZ (FaGe) 80%", 
@@ -362,14 +364,14 @@ async function loadJobs() {
             locations: "Bern", 
             date: "2026-03-09", 
             salary: "CHF 70'000 - 85'000", 
-            description: "Aufgabenbereich\n- Pflege und Betreuung gemäss Pflegeplanung\n- Ausführung medizinaltechnischer Verrichtungen\n\nAnforderungen\n- Erfolgreich abgeschlossene Ausbildung als FaGe EFZ\n\nBei Rückfragen steht Ihnen Frau Meier unter 0041 31 123 4567 zur Verfügung."
+            description: "Aufgabenbereich\n- Pflege und Betreuung gemäss Pflegeplanung\n- Ausführung medizinaltechnischer Verrichtungen\n\nAnforderungen\n- Erfolgreich abgeschlossene Ausbildung als FaGe EFZ"
         },
         {
             title: "Experte/in Intensivpflege NDS HF (60-100%)", 
             company: "Kantonsspital St. Gallen", 
             locations: "St. Gallen", 
             date: "2026-03-05", 
-            description: "Das bringen Sie mit\n- Abschluss als Dipl. Experte/in Intensivpflege NDS HF\n- Hohe Belastbarkeit in kritischen Situationen\n\nDas bieten wir\n- Ein motiviertes, offenes Team\n- Modernste medizintechnische Infrastruktur\n\nTelefonnummer für Auskünfte: 071 111 22 33."
+            description: "Das bringen Sie mit\n- Abschluss als Dipl. Experte/in Intensivpflege NDS HF\n- Hohe Belastbarkeit in kritischen Situationen\n\nDas bieten wir\n- Ein motiviertes, offenes Team\n- Modernste medizintechnische Infrastruktur"
         }
     ];
     document.getElementById('totalJobs').textContent = allJobs.length;
@@ -436,11 +438,9 @@ function formatDesc(text) {
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
   
-  // Telefonnummern entfernen
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{5,25}/gi, '');
   t = t.replace(/(?:(?:\+|00)(?:41|49|43|33)\s*(?:\(0\)\s*)?|0[1-9][0-9]\s*)[\d\s\.\-\/]{6,15}/g, '');
   
-  // Abschnittstitel hervorheben
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -454,15 +454,10 @@ function formatDesc(text) {
       '$1<span class="desc-section">$2</span>');
   });
   
-  // Markdown fett
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // Zeilenumbruch nach Satzende vor Grossbuchstaben
   t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br><br>$2');
-  // Doppelte Leerzeilen
   t = t.replace(/\n\n+/g, '<br><br>');
-  // Aufzählungen
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
-  // Einzelne Zeilenumbrüche
   t = t.replace(/\n/g, '<br>');
   return t;
 }
