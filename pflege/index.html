@@ -6,6 +6,8 @@
 <title>Pflege Jobs Schweiz – lebenplus-jobs.ch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('6Ra4TSz45CcgUI88j');</script>
 <style>
   :root { 
     --bg: #09090b; 
@@ -408,29 +410,23 @@ function formatDesc(text) {
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
 
-  // Telefonnummern entfernen
   t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
   t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
 
-  // E-Mail-Adressen entfernen
   t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
 
-  // URLs entfernen
   t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
   t = t.replace(/www\.[^\s<>"'\n]+/g, '');
 
-  // Abgeschnittene Sätze mit ... bereinigen
   t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
   t = t.replace(/\.{3,}\s*$/gm, '.');
   t = t.replace(/…(\s*\n)/g, '.$1');
   t = t.replace(/…\s*$/gm, '.');
 
-  // Grossgeschriebene Zeilen als Abschnittstitel formatieren
   t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
     (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
 
-  // Bekannte gemischtgeschriebene Abschnitte
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -493,24 +489,12 @@ function showFileName(input) {
 
 async function submitForm(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('.submit-btn');
-  const originalText = btn.textContent;
-  btn.textContent = 'Wird gesendet...';
-  btn.style.opacity = '0.7';
   try {
-    await fetch('https://formspree.io/f/mlgpjpqp', {
-      method: 'POST',
-      body: new FormData(e.target),
-      headers: { 'Accept': 'application/json' }
-    });
+    await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
   } catch(err) { console.error(err); }
-  btn.textContent = originalText;
-  btn.style.opacity = '1';
-  document.getElementById('applyFormContainer').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'flex';
-  e.target.reset();
-  document.getElementById('fileName').textContent = '';
-  setTimeout(closePopup, 3500);
+  document.getElementById('applyForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+  setTimeout(closePopup, 3000);
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
