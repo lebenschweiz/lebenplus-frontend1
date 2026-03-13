@@ -17,13 +17,14 @@ KATEGORIEN = [
 ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001'
 
 PROMPT_TEMPLATE = (
-    'Du erhältst einen kurzen Ausschnitt einer Stellenbeschreibung. '
-    'Erstelle daraus eine strukturierte, professionelle Stellenbeschreibung auf Deutsch '
-    'mit den Abschnitten: Über die Stelle, Ihre Aufgaben, Ihr Profil, Wir bieten. '
-    'Erfinde keine spezifischen Details die nicht im Text stehen, aber fülle sinnvoll aus '
-    'basierend auf der Jobbezeichnung und dem Unternehmen. '
-    'Entferne alle Telefonnummern, E-Mail-Adressen und URLs. '
-    'Gib nur den formatierten Text zurück ohne Markdown-Symbole.'
+    'Du erhältst einen Ausschnitt einer Stellenbeschreibung. '
+    'Deine Aufgabe: '
+    '1) Entferne alle Telefonnummern, E-Mail-Adressen, URLs und Kontaktangaben '
+    '2) Schreibe abgeschnittene Sätze zu Ende basierend nur auf dem vorhandenen Kontext '
+    '3) Strukturiere den Text mit Abschnitten wie \'Über die Stelle\', \'Ihre Aufgaben\', \'Ihr Profil\', \'Wir bieten\' - aber nur wenn diese Informationen im Originaltext vorhanden sind '
+    '4) Erfinde KEINE neuen Informationen, Anforderungen oder Benefits die nicht im Originaltext stehen '
+    '5) Behalte alle originalen Formulierungen so nah wie möglich '
+    '6) Gib nur den aufbereiteten Text zurück ohne Markdown-Symbole oder Erklärungen.'
 )
 
 _anthropic_client = anthropic.Anthropic()
