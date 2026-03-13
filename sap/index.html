@@ -6,6 +6,8 @@
 <title>SAP Jobs Schweiz – lebenplus-jobs.ch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('6Ra4TSz45CcgUI88j');</script>
 <style>
   :root { --bg:#0f0f0f; --card:#181818; --border:#2a2a2a; --accent:#e85d2f; --accent2:#ff8c5a; --text:#f0f0f0; --muted:#888; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -83,7 +85,7 @@
   .desc-section:first-child { margin-top:0; }
 
   /* RIGHT: Apply form */
-  .popup-apply { padding:2rem 2rem 2rem; overflow-y:auto; background:#151515; }
+  .popup-apply { padding:2rem; overflow-y:auto; background:#151515; }
   .apply-title { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; margin-bottom:1.5rem; }
   .form-group { margin-bottom:1.1rem; }
   .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#aaa; margin-bottom:0.45rem; letter-spacing:0.04em; text-transform:uppercase; }
@@ -263,29 +265,23 @@ function formatDesc(text) {
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
 
-  // Telefonnummern entfernen
   t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
   t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
 
-  // E-Mail-Adressen entfernen
   t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
 
-  // URLs entfernen
   t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
   t = t.replace(/www\.[^\s<>"'\n]+/g, '');
 
-  // Abgeschnittene Sätze mit ... bereinigen
   t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
   t = t.replace(/\.{3,}\s*$/gm, '.');
   t = t.replace(/…(\s*\n)/g, '.$1');
   t = t.replace(/…\s*$/gm, '.');
 
-  // Grossgeschriebene Zeilen als Abschnittstitel formatieren
   t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
     (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
 
-  // Bekannte gemischtgeschriebene Abschnitte
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -335,19 +331,17 @@ function closePopup() {
 }
 function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay')) closePopup(); }
 function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name||''; }
+
 async function submitForm(e) {
   e.preventDefault();
   try {
-    await fetch('https://formspree.io/f/mlgpjpqp', {
-      method: 'POST',
-      body: new FormData(e.target),
-      headers: { 'Accept': 'application/json' }
-    });
-  } catch(err) {}
+    await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
+  } catch(err) { console.error(err); }
   document.getElementById('applyForm').style.display = 'none';
   document.getElementById('successMsg').style.display = 'block';
   setTimeout(closePopup, 3000);
 }
+
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
 loadJobs();
 </script>
