@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Abhängigkeiten installieren
-        run: pip install requests anthropic
+        run: pip install requests
 
       - name: Render aufwecken (90 Sek warten)
         run: |
@@ -32,13 +32,11 @@ jobs:
           echo "Render bereit"
 
       - name: Scraper ausführen
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scraper.py
 
       - name: Änderungen committen und pushen
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Jobs aktualisiert"
-          file_pattern: data/*.json
+          file_pattern: data/jobs.json data/pflege-jobs.json data/sap-jobs.json data/alle-jobs.json
           push_options: '--force'
