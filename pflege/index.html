@@ -334,7 +334,6 @@
 let allJobs = [];
 let currentFiltered = [];
 
-// Icons für Meta-Daten
 const iconLocation = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
 const iconDate = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>`;
 const iconSalary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>`;
@@ -342,41 +341,14 @@ const iconSalary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
 async function loadJobs() {
   try {
     const r = await fetch('/data/pflege-jobs.json?t=' + Date.now());
-    if (!r.ok) throw new Error('Mock fallback needed');
+    if (!r.ok) throw new Error('fetch failed');
     const data = await r.json();
     allJobs = data.jobs || [];
     document.getElementById('totalJobs').textContent = data.total || allJobs.length;
     document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
     renderJobs(allJobs);
   } catch(e) {
-    allJobs = [
-        {
-            title: "Dipl. Pflegefachperson HF/FH", 
-            company: "Universitätsspital Zürich", 
-            locations: "Zürich", 
-            date: "2026-03-10", 
-            salary: "CHF 85'000 - 110'000", 
-            description: "Ihre Hauptaufgaben\n- Ganzheitliche Betreuung und Pflege von Patientinnen und Patienten\n- Übernahme der Fachverantwortung im interdisziplinären Team\n\nIhr Profil\n- Abgeschlossene Ausbildung als Dipl. Pflegefachperson HF/FH\n- Berufserfahrung von Vorteil\n\nWir bieten\n- Fortschrittliche Anstellungsbedingungen"
-        },
-        {
-            title: "Fachfrau/-mann Gesundheit EFZ (FaGe) 80%", 
-            company: "Inselspital Bern", 
-            locations: "Bern", 
-            date: "2026-03-09", 
-            salary: "CHF 70'000 - 85'000", 
-            description: "Aufgabenbereich\n- Pflege und Betreuung gemäss Pflegeplanung\n- Ausführung medizinaltechnischer Verrichtungen\n\nAnforderungen\n- Erfolgreich abgeschlossene Ausbildung als FaGe EFZ"
-        },
-        {
-            title: "Experte/in Intensivpflege NDS HF (60-100%)", 
-            company: "Kantonsspital St. Gallen", 
-            locations: "St. Gallen", 
-            date: "2026-03-05", 
-            description: "Das bringen Sie mit\n- Abschluss als Dipl. Experte/in Intensivpflege NDS HF\n- Hohe Belastbarkeit in kritischen Situationen\n\nDas bieten wir\n- Ein motiviertes, offenes Team\n- Modernste medizintechnische Infrastruktur"
-        }
-    ];
-    document.getElementById('totalJobs').textContent = allJobs.length;
-    document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: Heute (Vorschau-Daten)';
-    renderJobs(allJobs);
+    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden der Jobs.</div>';
   }
 }
 
@@ -405,9 +377,7 @@ function renderJobs(jobs) {
         </div>
         <span class="job-badge">Pflege</span>
       </div>
-      
       ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
-      
       <div class="job-bottom">
         <div class="job-meta">
           <span>${iconLocation} ${job.locations||'Schweiz'}</span>
@@ -437,10 +407,30 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-  
-  t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{5,25}/gi, '');
-  t = t.replace(/(?:(?:\+|00)(?:41|49|43|33)\s*(?:\(0\)\s*)?|0[1-9][0-9]\s*)[\d\s\.\-\/]{6,15}/g, '');
-  
+
+  // Telefonnummern entfernen
+  t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
+  t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
+  t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
+
+  // E-Mail-Adressen entfernen
+  t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
+
+  // URLs entfernen
+  t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
+  t = t.replace(/www\.[^\s<>"'\n]+/g, '');
+
+  // Abgeschnittene Sätze mit ... bereinigen
+  t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
+  t = t.replace(/\.{3,}\s*$/gm, '.');
+  t = t.replace(/…(\s*\n)/g, '.$1');
+  t = t.replace(/…\s*$/gm, '.');
+
+  // Grossgeschriebene Zeilen als Abschnittstitel formatieren
+  t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
+    (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
+
+  // Bekannte gemischtgeschriebene Abschnitte
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -453,9 +443,8 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
-  
+
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br><br>$2');
   t = t.replace(/\n\n+/g, '<br><br>');
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
   t = t.replace(/\n/g, '<br>');
@@ -498,40 +487,29 @@ function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay
 function showFileName(input) { 
   const name = input.files[0]?.name;
   const label = document.getElementById('fileName');
-  if(name) {
-    label.textContent = "📎 " + name;
-    label.style.marginTop = "0.5rem";
-  } else {
-    label.textContent = '';
-  }
+  if(name) { label.textContent = "📎 " + name; label.style.marginTop = "0.5rem"; }
+  else { label.textContent = ''; }
 }
 
 async function submitForm(e) {
   e.preventDefault();
-  
   const btn = e.target.querySelector('.submit-btn');
   const originalText = btn.textContent;
   btn.textContent = 'Wird gesendet...';
   btn.style.opacity = '0.7';
-  
   try {
     await fetch('https://formspree.io/f/mlgpjpqp', {
       method: 'POST',
       body: new FormData(e.target),
       headers: { 'Accept': 'application/json' }
     });
-  } catch(err) {
-    console.error(err);
-  }
-  
+  } catch(err) { console.error(err); }
   btn.textContent = originalText;
   btn.style.opacity = '1';
   document.getElementById('applyFormContainer').style.display = 'none';
   document.getElementById('successMsg').style.display = 'flex';
-  
   e.target.reset();
   document.getElementById('fileName').textContent = '';
-  
   setTimeout(closePopup, 3500);
 }
 
