@@ -57,7 +57,6 @@
   .job-meta span { font-size:0.8rem; color:var(--muted); }
   .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
 
-  /* POPUP */
   .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:200; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
   .popup-overlay.open { display:flex; }
   .popup { background:#1a1a1a; border:1px solid #333; border-radius:18px; width:100%; max-width:940px; max-height:90vh; display:grid; grid-template-columns:1fr 380px; overflow:hidden; position:relative; animation:popIn 0.25s cubic-bezier(0.34,1.4,0.64,1); box-shadow:0 30px 70px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04); }
@@ -67,7 +66,6 @@
   .popup-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:0.9rem; transition:background 0.2s,color 0.2s,transform 0.15s; }
   .popup-close:hover { color:var(--text); background:rgba(255,255,255,0.12); transform:scale(1.1); }
 
-  /* LEFT: Job detail */
   .popup-detail { padding:2.5rem; overflow-y:auto; max-height:90vh; scrollbar-width:thin; scrollbar-color:#e85d2f #1a1a1a; border-right:1px solid var(--border); }
   .popup-detail::-webkit-scrollbar { width: 6px; }
   .popup-detail::-webkit-scrollbar-track { background: #1a1a1a; }
@@ -84,7 +82,6 @@
   .desc-section { color:#e85d2f; font-weight:700; font-family:'Syne',sans-serif; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.08em; display:block; margin-top:1.6rem; margin-bottom:0.6rem; padding-bottom:0.4rem; border-bottom:1px solid rgba(232,93,47,0.25); }
   .desc-section:first-child { margin-top:0; }
 
-  /* RIGHT: Apply form */
   .popup-apply { padding:2rem; overflow-y:auto; background:#151515; }
   .apply-title { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; margin-bottom:1.5rem; }
   .form-group { margin-bottom:1.1rem; }
@@ -99,6 +96,8 @@
   .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:9px; padding:1.05rem; font-size:1.05rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s,transform 0.15s; margin-top:0.75rem; letter-spacing:0.02em; }
   .submit-btn:hover { background:var(--accent2); transform:translateY(-1px); }
   .submit-btn:active { transform:translateY(0); }
+  .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+  .error-msg { display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:0.7rem 1rem; margin-top:0.75rem; color:#fca5a5; font-size:0.85rem; line-height:1.5; }
   .success-msg { display:none; text-align:center; padding:3rem 1rem; }
   .success-msg .check { font-size:3rem; margin-bottom:1rem; }
   .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:0.6rem; }
@@ -191,7 +190,8 @@
             <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
           </div>
         </div>
-        <button type="submit" class="submit-btn">Bewerbung absenden →</button>
+        <div class="error-msg" id="errorMsg"></div>
+        <button type="submit" class="submit-btn" id="submitBtn">Bewerbung absenden →</button>
       </form>
       <div class="success-msg" id="successMsg">
         <div class="check">✅</div>
@@ -264,24 +264,18 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-
   t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
   t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
-
   t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
-
   t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
   t = t.replace(/www\.[^\s<>"'\n]+/g, '');
-
   t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
   t = t.replace(/\.{3,}\s*$/gm, '.');
   t = t.replace(/…(\s*\n)/g, '.$1');
   t = t.replace(/…\s*$/gm, '.');
-
   t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
     (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
-
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -294,7 +288,6 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
-
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/\n\n+/g, '<br><br>');
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
@@ -319,6 +312,7 @@ function openPopup(i) {
   document.getElementById('hiddenUnternehmen').value = job.company;
   document.getElementById('applyForm').style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('errorMsg').style.display = 'none';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   document.querySelector('.popup-detail').scrollTop = 0;
@@ -334,12 +328,24 @@ function showFileName(input) { document.getElementById('fileName').textContent =
 
 async function submitForm(e) {
   e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('errorMsg');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  errEl.style.display = 'none';
   try {
     await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
-  } catch(err) { console.error(err); }
-  document.getElementById('applyForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
-  setTimeout(closePopup, 3000);
+    document.getElementById('applyForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    setTimeout(closePopup, 3000);
+  } catch(err) {
+    console.error('EmailJS Fehler:', err);
+    const msg = err?.text || err?.message || JSON.stringify(err);
+    errEl.textContent = 'Fehler beim Senden: ' + msg;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Bewerbung absenden →';
+  }
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
