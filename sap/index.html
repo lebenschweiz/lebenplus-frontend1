@@ -262,9 +262,30 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-  t = t.replace(/(\+41|\+49|\+43|\+33|0041|0049)\s?[\d\s\.\-\/\(\)]{6,25}/g, '');
-  t = t.replace(/\b0\d{2,3}[\s\.\-]?\d{3}[\s\.\-]?\d{2}[\s\.\-]?\d{2}\b/g, '');
-  t = t.replace(/(Tel\.?\s*:?|Telefon\s*:?|Telefonnummer\s*:?|Mobile?\s*:?|Mobil\s*:?|Fax\s*:?)\s*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
+
+  // Telefonnummern entfernen
+  t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
+  t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
+  t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
+
+  // E-Mail-Adressen entfernen
+  t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
+
+  // URLs entfernen
+  t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
+  t = t.replace(/www\.[^\s<>"'\n]+/g, '');
+
+  // Abgeschnittene Sätze mit ... bereinigen
+  t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
+  t = t.replace(/\.{3,}\s*$/gm, '.');
+  t = t.replace(/…(\s*\n)/g, '.$1');
+  t = t.replace(/…\s*$/gm, '.');
+
+  // Grossgeschriebene Zeilen als Abschnittstitel formatieren
+  t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
+    (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
+
+  // Bekannte gemischtgeschriebene Abschnitte
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -277,11 +298,12 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
+
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  t = t.replace(/([.!?])\s+([A-ZÄÖÜ])/g, '$1<br><br>$2');
   t = t.replace(/\n\n+/g, '<br><br>');
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
   t = t.replace(/\n/g, '<br>');
+  t += '<div style="margin-top:1.5rem;padding:1rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:4px;"><p style="margin:0;color:#ccc;font-size:0.9rem;">Interessiert? Wir freuen uns auf Ihre Bewerbung! Füllen Sie das Formular aus und wir melden uns umgehend bei Ihnen. Für weitere Informationen zu dieser Stelle stehen wir Ihnen gerne zur Verfügung.</p></div>';
   return t;
 }
 
