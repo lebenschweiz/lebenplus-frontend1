@@ -36,7 +36,6 @@
     background-image: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
   }
 
-  /* --- NAVBAR --- */
   nav { 
     display: flex; align-items: center; justify-content: space-between; 
     padding: 1.2rem 5%; border-bottom: 1px solid rgba(255,255,255,0.05); 
@@ -49,7 +48,6 @@
   .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: all 0.3s ease; }
   .nav-links a:hover, .nav-links a.active { color: var(--text); text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-  /* --- HERO --- */
   .hero { padding: 6rem 5% 4rem; max-width: 1000px; margin: 0 auto; text-align: center; }
   .hero-tag { 
     display: inline-flex; align-items: center; gap: 0.5rem;
@@ -66,12 +64,10 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
   }
   .hero p { color: var(--text-muted); font-size: 1.15rem; line-height: 1.6; max-width: 600px; margin: 0 auto; }
-  
   .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; }
   .stat-num { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; color: var(--text); line-height: 1; }
   .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
 
-  /* --- SEARCH --- */
   .search-wrap { max-width: 800px; margin: 0 auto 4rem; padding: 0 5%; }
   .search-box { 
     display: flex; gap: 0.5rem; background: var(--card); 
@@ -91,7 +87,6 @@
   }
   .search-box button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
 
-  /* --- JOBS GRID --- */
   .jobs-wrap { max-width: 960px; margin: 0 auto; padding: 0 5% 6rem; }
   .jobs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .jobs-header h2 { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; }
@@ -113,7 +108,6 @@
   }
   .job-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); background: var(--card-hover); }
   .job-card:hover::after { opacity: 1; }
-  
   .job-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .job-logo-wrap { display: flex; align-items: center; gap: 1rem; }
   .job-logo { 
@@ -125,19 +119,15 @@
   }
   .job-company { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
   .job-badge { background: rgba(255, 255, 255, 0.05); color: var(--text); font-size: 0.75rem; font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05); }
-  
   .job-title { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; line-height: 1.3; color: var(--text); }
   .job-desc-preview { color: #d4d4d8; font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  
   .job-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; gap: 1rem; }
   .job-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
   .job-meta span { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
   .job-meta svg { width: 16px; height: 16px; color: var(--accent); }
-  
   .job-apply { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.9rem; font-weight: 600; transition: gap 0.2s ease; }
   .job-card:hover .job-apply { gap: 0.8rem; }
 
-  /* --- POPUP MODAL --- */
   .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 2rem; backdrop-filter: blur(8px); }
   .popup-overlay.open { display: flex; }
   .popup { 
@@ -157,7 +147,6 @@
   }
   .popup-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
-  /* LEFT: Job Detail */
   .popup-detail { padding: 3rem; overflow-y: auto; max-height: 90vh; scrollbar-width: thin; scrollbar-color: #e85d2f #1a1a1a; background: var(--card); }
   .popup-detail::-webkit-scrollbar { width: 6px; }
   .popup-detail::-webkit-scrollbar-track { background: #1a1a1a; }
@@ -175,18 +164,15 @@
   .popup-meta-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .popup-meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: #e4e4e7; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
   .popup-meta-item svg { width: 16px; height: 16px; color: var(--accent); }
-  
   .popup-desc-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
   .popup-description { font-size: 1.05rem; line-height: 1.8; color: #d4d4d8; }
   .popup-description strong { color: white; font-weight: 600; }
   .desc-section { color: #e85d2f; font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 1.8rem; margin-bottom: 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(232,93,47,0.2); }
   .desc-section:first-child { margin-top: 0; }
 
-  /* RIGHT: Apply Form */
   .popup-apply { padding: 3rem; overflow-y: auto; background: var(--bg); border-left: 1px solid rgba(255,255,255,0.05); }
   .apply-title { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
   .apply-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
-  
   .form-group { margin-bottom: 1.5rem; }
   .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
   .form-group input, .form-group textarea { 
@@ -196,7 +182,6 @@
   }
   .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.05); box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); }
   .form-group textarea { resize: vertical; min-height: 120px; }
-  
   .file-upload { 
     width: 100%; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2); 
     border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; color: var(--text-muted); 
@@ -206,7 +191,6 @@
   .file-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .file-icon { width: 24px; height: 24px; color: var(--accent); }
   .file-name { font-size: 0.85rem; color: var(--success); font-weight: 600; }
-  
   .submit-btn { 
     width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent2)); 
     color: white; border: none; border-radius: 12px; padding: 1.2rem; font-size: 1.1rem; 
@@ -214,12 +198,12 @@
     margin-top: 1rem; box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
   }
   .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(249, 115, 22, 0.4); }
-  
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .error-msg { display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 0.8rem 1rem; margin-top: 1rem; color: #fca5a5; font-size: 0.88rem; line-height: 1.5; }
   .success-msg { display: none; text-align: center; padding: 4rem 1rem; height: 100%; flex-direction: column; justify-content: center; align-items: center; }
   .success-msg .check-icon { width: 80px; height: 80px; color: var(--success); margin-bottom: 1.5rem; }
   .success-msg h3 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 1rem; }
   .success-msg p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; }
-  
   .loading, .no-jobs { text-align: center; padding: 4rem; color: var(--text-muted); font-size: 1.1rem; }
 </style>
 </head>
@@ -293,7 +277,6 @@
         <form id="applyForm" onsubmit="submitForm(event)">
           <input type="hidden" name="stelle" id="hiddenStelle">
           <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
-          
           <div class="form-group">
             <label>Vollständiger Name *</label>
             <input type="text" name="name" required placeholder="Max Mustermann">
@@ -319,10 +302,10 @@
               <input type="file" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
             </div>
           </div>
-          <button type="submit" class="submit-btn">Bewerbung absenden</button>
+          <div class="error-msg" id="errorMsg"></div>
+          <button type="submit" class="submit-btn" id="submitBtn">Bewerbung absenden</button>
         </form>
       </div>
-
       <div class="success-msg" id="successMsg">
         <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
         <h3>Bewerbung erfolgreich!</h3>
@@ -366,7 +349,6 @@ function renderJobs(jobs) {
   currentFiltered = jobs;
   document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
   if (!jobs.length) { document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine passenden Stellen gefunden.</div>'; return; }
-  
   document.getElementById('jobsGrid').innerHTML = jobs.map((job,i) => `
     <div class="job-card" onclick="openPopup(${i})">
       <div class="job-top">
@@ -409,24 +391,18 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-
   t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
   t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
   t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
-
   t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
-
   t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
   t = t.replace(/www\.[^\s<>"'\n]+/g, '');
-
   t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
   t = t.replace(/\.{3,}\s*$/gm, '.');
   t = t.replace(/…(\s*\n)/g, '.$1');
   t = t.replace(/…\s*$/gm, '.');
-
   t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
     (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
-
   const sections = [
     'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
@@ -439,7 +415,6 @@ function formatDesc(text) {
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
       '$1<span class="desc-section">$2</span>');
   });
-
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/\n\n+/g, '<br><br>');
   t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
@@ -454,22 +429,19 @@ function openPopup(i) {
   document.getElementById('ppLogo').textContent = (job.company||'?')[0].toUpperCase();
   document.getElementById('ppCompany').textContent = job.company||'';
   document.getElementById('ppTitle').textContent = job.title||'';
-  
   let meta = '';
   if (job.locations) meta += `<span class="popup-meta-item">${iconLocation} ${job.locations}</span>`;
   if (job.date)      meta += `<span class="popup-meta-item">${iconDate} ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">${iconSalary} ${job.salary}</span>`;
-  
   document.getElementById('ppMeta').innerHTML = meta;
   document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
-  
   document.getElementById('applyFormContainer').style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('errorMsg').style.display = 'none';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  
   document.querySelector('.popup-detail').scrollTop = 0;
   document.querySelector('.popup-apply').scrollTop = 0;
 }
@@ -489,12 +461,24 @@ function showFileName(input) {
 
 async function submitForm(e) {
   e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('errorMsg');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  errEl.style.display = 'none';
   try {
     await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
-  } catch(err) { console.error(err); }
-  document.getElementById('applyForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
-  setTimeout(closePopup, 3000);
+    document.getElementById('applyForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'flex';
+    setTimeout(closePopup, 3000);
+  } catch(err) {
+    console.error('EmailJS Fehler:', err);
+    const msg = err?.text || err?.message || JSON.stringify(err);
+    errEl.textContent = 'Fehler beim Senden: ' + msg;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Bewerbung absenden';
+  }
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
