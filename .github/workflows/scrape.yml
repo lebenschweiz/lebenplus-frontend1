@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Abhängigkeiten installieren
-        run: pip install requests google-generativeai
+        run: pip install requests
 
       - name: Render aufwecken (90 Sek warten)
         run: |
@@ -32,8 +32,6 @@ jobs:
           echo "Render bereit"
 
       - name: Scraper ausführen
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scraper.py
 
       - name: Änderungen committen und pushen
