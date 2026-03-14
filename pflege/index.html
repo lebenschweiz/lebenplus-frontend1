@@ -182,13 +182,6 @@
   .popup-meta-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .popup-meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: #e4e4e7; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
   .popup-meta-item svg { width: 16px; height: 16px; color: var(--accent); }
-  .popup-desc-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
-  .popup-description { font-size: 1.05rem; line-height: 1.8; color: #d4d4d8; }
-  .popup-description strong { color: white; font-weight: 600; }
-  .popup-description ul { margin: 0.6rem 0 0.6rem 1.4rem; padding: 0; color: #d4d4d8; }
-  .popup-description li { margin-bottom: 0.3rem; }
-  .desc-section { color: #e85d2f; font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 1.8rem; margin-bottom: 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(232,93,47,0.2); }
-  .desc-section:first-child { margin-top: 0; }
 
   .popup-apply { padding: 3rem; overflow-y: auto; min-height: 0; background: var(--bg); border-left: 1px solid rgba(255,255,255,0.05); }
   .apply-title { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
@@ -286,8 +279,10 @@
       </div>
       <div class="popup-job-title" id="ppTitle"></div>
       <div class="popup-meta-row" id="ppMeta"></div>
-      <div class="popup-desc-title">Stellenbeschreibung</div>
-      <div class="popup-description" id="ppDesc"></div>
+      <div style="padding:1.2rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:6px;margin:1.5rem 0">
+        <p style="margin:0 0 0.5rem;color:#e85d2f;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em">Interessiert?</p>
+        <p style="margin:0;color:#ccc;font-size:0.92rem;line-height:1.6">Senden Sie uns eine kurze Anfrage – wir melden uns umgehend mit allen Details zu dieser Stelle.</p>
+      </div>
     </div>
 
     <div class="popup-apply">
@@ -409,74 +404,6 @@ function filterJobs() {
   ));
 }
 
-function formatDesc(text) {
-  if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
-  if (text.includes('<') && text.includes('>')) return text;
-  let t = text;
-  t = t.replace(/^\s*STELLENBESCHREIBUNG\s*[\n\r]*/i, '');
-  t = t.replace(/(?:Tel\.?|Telefon(?:nummer)?|Mobile?|Mobil|Natel|Fax)\s*:?\s*[\+\d\s\.\-\/\(\)]{4,30}/gi, '');
-  t = t.replace(/(\+41|0041)\s?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
-  t = t.replace(/0\d{2}[\s\-]\d{3}[\s\-]\d{2}[\s\-]\d{2}/g, '');
-  t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
-  t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
-  t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
-  t = t.replace(/www\.[^\s<>"'\n]+/g, '');
-  t = t.replace(/\.{3,}\s*(\n|$)/gm, '.$1');
-  t = t.replace(/…\s*(\n|$)/gm, '.$1');
-  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  const knownSections = [
-    'Über die Stelle','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
-    'Ihr Profil','Dein Profil','Profil','Anforderungsprofil','Anforderungen',
-    'Wir bieten','Was wir bieten','Das bieten wir','Benefits','Benefit',
-    'Das bringen Sie mit','Das bringst du mit','Qualifikationen',
-    'Kontakt','Über uns','Stellenbeschreibung'
-  ];
-  knownSections.forEach(s => {
-    const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'), '$1\x02' + s + '\x03');
-  });
-  t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
-    (match, pre, title) => pre + '\x02' + title.trim() + '\x03');
-  const lines = t.split('\n');
-  const out = [];
-  const bulletItems = [];
-  const flushBullets = () => {
-    if (bulletItems.length) {
-      out.push('<ul style="margin:0.6rem 0 0.6rem 1.4rem;padding:0;color:#d4d4d8">' + bulletItems.join('') + '</ul>');
-      bulletItems.length = 0;
-    }
-  };
-  for (let i = 0; i < lines.length; i++) {
-    const raw = lines[i];
-    const trimmed = raw.trim();
-    if (trimmed.startsWith('\x02') && trimmed.endsWith('\x03')) {
-      flushBullets();
-      out.push('<span class="desc-section">' + trimmed.slice(1, -1) + '</span>');
-      continue;
-    }
-    if (/^[•\-\*]\s/.test(trimmed)) {
-      bulletItems.push('<li style="margin-bottom:0.25rem">' + trimmed.replace(/^[•\-\*]\s+/, '') + '</li>');
-      continue;
-    }
-    flushBullets();
-    if (!trimmed) { out.push(''); continue; }
-    if (out.length > 0 && /^[a-zäöüàáèéìíòóùú]/.test(trimmed)) {
-      const lastIdx = out.length - 1;
-      const last = out[lastIdx].trimEnd();
-      if (last && !last.startsWith('<') && !last.endsWith('>')) { out[lastIdx] = last + ' ' + trimmed; continue; }
-    }
-    let fixed = raw.trimEnd();
-    if (/[,a-zA-ZäöüÄÖÜß]$/.test(fixed)) fixed += '.';
-    out.push(fixed);
-  }
-  flushBullets();
-  t = out.join('\n');
-  t = t.replace(/\n{2,}/g, '<br><br>');
-  t = t.replace(/\n/g, '<br>');
-  t += '<div style="margin-top:1.5rem;padding:1rem 1.2rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:6px"><p style="margin:0 0 0.4rem;color:#e85d2f;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em">Interesse geweckt?</p><p style="margin:0;color:#ccc;font-size:0.88rem;line-height:1.6">Wir freuen uns auf Ihre Bewerbung! Füllen Sie das Formular aus und wir melden uns umgehend bei Ihnen. Für weitere Informationen zu dieser Stelle stehen wir Ihnen gerne zur Verfügung.</p></div>';
-  return t;
-}
-
 function openPopup(i) {
   const job = currentFiltered[i];
   if (!job) return;
@@ -488,7 +415,6 @@ function openPopup(i) {
   if (job.date)      meta += `<span class="popup-meta-item">${iconDate} ${formatDate(job.date)}</span>`;
   if (job.salary)    meta += `<span class="popup-meta-item">${iconSalary} ${job.salary}</span>`;
   document.getElementById('ppMeta').innerHTML = meta;
-  document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
   document.getElementById('hiddenTitle').value = job.title;
@@ -521,7 +447,6 @@ async function submitForm(e) {
   btn.disabled = true;
   btn.textContent = 'Wird gesendet…';
   errEl.style.display = 'none';
-  // from_email spiegelt den Email-Wert für EmailJS Reply-To
   document.getElementById('hiddenFromEmail').value = document.getElementById('fieldEmail').value;
   try {
     await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);

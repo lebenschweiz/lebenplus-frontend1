@@ -7,12 +7,12 @@ import google.generativeai as genai
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
-PAGES       = 10
+PAGES       = 20
 MAX_JOBS    = 10
 
 KATEGORIEN = [
-    { 'name': 'pflege', 'keywords': 'Pflege',          'location': 'Schweiz', 'output': 'data/pflege-jobs.json', 'max_jobs': 10  },
-    { 'name': 'sap',    'keywords': 'SAP',              'location': 'Schweiz', 'output': 'data/sap-jobs.json',    'max_jobs': 10  },
+    { 'name': 'pflege', 'keywords': 'Pflege Pflegefachperson Pflegefachmann Pflegefachfrau Krankenpflege Spitex FaGe Betagtenpflege Heimleitung', 'location': 'Schweiz', 'output': 'data/pflege-jobs.json', 'max_jobs': 10  },
+    { 'name': 'sap',    'keywords': 'SAP ABAP Fiori S4HANA IT Software Informatik Entwickler DevOps Cloud Cybersecurity Data',              'location': 'Schweiz', 'output': 'data/sap-jobs.json',    'max_jobs': 10  },
     { 'name': 'alle',   'keywords': 'Stellen Schweiz',  'location': 'Schweiz', 'output': 'data/alle-jobs.json',   'max_jobs': 200 },
 ]
 
