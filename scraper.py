@@ -131,14 +131,22 @@ Aufgabe:
 Originaltext:
 {desc}"""
 
-            try:
-                response = gemini_model.generate_content(prompt)
-                job['description'] = response.text.strip()
-                improved += 1
-                time.sleep(0.1)
-            except Exception as e:
-                print(f"    Gemini Fehler: {e}")
-                continue
+            for attempt in range(3):
+                try:
+                    response = gemini_model.generate_content(prompt)
+                    job['description'] = response.text.strip()
+                    improved += 1
+                    break
+                except Exception as e:
+                    if '429' in str(e):
+                        wait = 30 * (attempt + 1)
+                        print(f"    Rate limit – warte {wait}s...")
+                        time.sleep(wait)
+                    else:
+                        print(f"    Fehler: {e}")
+                        break
+
+            time.sleep(2)
 
         data['jobs'] = jobs
         with open(filepath, 'w', encoding='utf-8') as f:
@@ -194,7 +202,7 @@ def main():
     api_key = os.environ.get('GEMINI_API_KEY')
     if api_key:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         improve_descriptions(model, output_files)
     else:
         print("\nGEMINI_API_KEY nicht gesetzt – zweiter Durchlauf übersprungen.")
