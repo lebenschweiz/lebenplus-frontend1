@@ -8,12 +8,31 @@ import google.generativeai as genai
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
 PAGES       = 20
-MAX_JOBS    = 10
 
 KATEGORIEN = [
-    { 'name': 'pflege', 'keywords': 'Pflege Pflegefachperson Pflegefachmann Pflegefachfrau Krankenpflege Spitex FaGe Betagtenpflege Heimleitung', 'location': 'Schweiz', 'output': 'data/pflege-jobs.json', 'max_jobs': 10  },
-    { 'name': 'sap',    'keywords': 'SAP ABAP Fiori S4HANA IT Software Informatik Entwickler DevOps Cloud Cybersecurity Data',              'location': 'Schweiz', 'output': 'data/sap-jobs.json',    'max_jobs': 10  },
-    { 'name': 'alle',   'keywords': 'Stellen Schweiz',  'location': 'Schweiz', 'output': 'data/alle-jobs.json',   'max_jobs': 200 },
+    {
+        'name': 'pflege',
+        'keywords': ['Pflege', 'Pflegefachperson', 'Pflegefachmann', 'Pflegefachfrau',
+                     'Krankenpflege', 'Spitex', 'FaGe', 'Betagtenpflege', 'Heimleitung'],
+        'location': 'Schweiz',
+        'output': 'data/pflege-jobs.json',
+        'max_jobs': 200,
+    },
+    {
+        'name': 'sap',
+        'keywords': ['SAP', 'ABAP', 'Fiori', 'S4HANA', 'IT', 'Software',
+                     'Informatik', 'Entwickler', 'DevOps', 'Cloud', 'Cybersecurity', 'Data'],
+        'location': 'Schweiz',
+        'output': 'data/sap-jobs.json',
+        'max_jobs': 200,
+    },
+    {
+        'name': 'alle',
+        'keywords': ['Stellen Schweiz'],
+        'location': 'Schweiz',
+        'output': 'data/alle-jobs.json',
+        'max_jobs': 200,
+    },
 ]
 
 # Begriffe die im Titel vorkommen → Job wird aus alle-jobs.json herausgefiltert
@@ -32,22 +51,22 @@ def filter_jobs(jobs):
     return [j for j in jobs if not is_excluded(j)]
 
 
-def fetch_jobs(keywords, location, max_jobs=MAX_JOBS):
-    all_jobs  = []
-    seen_urls = set()
+def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls):
+    """Holt Jobs für ein einzelnes Keyword über mehrere Seiten."""
+    collected = []
 
     for page in range(1, PAGES + 1):
-        if len(all_jobs) >= max_jobs:
+        if len(collected) >= max_jobs:
             break
 
-        params = { 'keywords': keywords, 'location': location, 'pagesize': PAGE_SIZE, 'page': page }
+        params = {'keywords': keyword, 'location': location, 'pagesize': PAGE_SIZE, 'page': page}
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
-            print(f"  Seite {page} – HTTP {r.status_code}")
+            print(f"  [{keyword}] Seite {page} – HTTP {r.status_code}")
             data = r.json()
 
             if data.get('type') != 'JOBS':
-                print(f"  Seite {page}: type={data.get('type')}")
+                print(f"  [{keyword}] Seite {page}: type={data.get('type')}")
                 break
 
             jobs = data.get('jobs', [])
@@ -55,15 +74,13 @@ def fetch_jobs(keywords, location, max_jobs=MAX_JOBS):
                 break
 
             for job in jobs:
-                if len(all_jobs) >= max_jobs:
+                if len(collected) >= max_jobs:
                     break
-
                 url = job.get('url', '')
                 if url in seen_urls:
                     continue
                 seen_urls.add(url)
-
-                all_jobs.append({
+                collected.append({
                     'id':          job.get('id', ''),
                     'title':       job.get('title', ''),
                     'company':     job.get('company', ''),
@@ -74,11 +91,26 @@ def fetch_jobs(keywords, location, max_jobs=MAX_JOBS):
                     'url':         url,
                 })
 
-            print(f"  Seite {page}: {len(jobs)} Jobs (total: {len(all_jobs)})")
+            print(f"  [{keyword}] Seite {page}: {len(jobs)} Jobs (gesammelt: {len(collected)})")
 
         except Exception as e:
-            print(f"  Fehler auf Seite {page}: {e}")
+            print(f"  [{keyword}] Fehler auf Seite {page}: {e}")
             break
+
+    return collected
+
+
+def fetch_jobs(keywords, location, max_jobs=200):
+    """Holt Jobs für eine Liste von Keywords (dedupliziert nach URL)."""
+    all_jobs = []
+    seen_urls = set()
+
+    for keyword in keywords:
+        if len(all_jobs) >= max_jobs:
+            break
+        jobs = fetch_jobs_for_keyword(keyword, location, max_jobs - len(all_jobs), seen_urls)
+        all_jobs.extend(jobs)
+        print(f"  → '{keyword}': {len(jobs)} neue Jobs (gesamt: {len(all_jobs)})")
 
     return all_jobs
 
@@ -164,7 +196,7 @@ def main():
 
     for kat in KATEGORIEN:
         print(f"\n=== {kat['name'].upper()} ===")
-        jobs = fetch_jobs(kat['keywords'], kat['location'], kat.get('max_jobs', MAX_JOBS))
+        jobs = fetch_jobs(kat['keywords'], kat['location'], kat.get('max_jobs', 200))
 
         # Für die 'alle' Kategorie: Spezifische Berufe herausfiltern
         if kat['name'] == 'alle':
