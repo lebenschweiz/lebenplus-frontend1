@@ -1,7 +1,9 @@
 import requests
 import json
 import os
+import time
 from datetime import datetime
+import google.generativeai as genai
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
@@ -81,12 +83,76 @@ def fetch_jobs(keywords, location, max_jobs=MAX_JOBS):
     return all_jobs
 
 
+def needs_improvement(desc):
+    """True wenn Beschreibung kurz oder abgeschnitten wirkt."""
+    if not desc:
+        return False
+    text = desc.strip()
+    if len(text) < 300:
+        return True
+    if text.endswith('...') or text.endswith('…'):
+        return True
+    if text and text[-1] not in '.!?»"\'':
+        return True
+    return False
+
+
+def improve_descriptions(gemini_model, output_files):
+    """Zweiter Durchlauf: kurze/abgeschnittene Beschreibungen via Gemini verbessern."""
+    print("\n=== ZWEITER DURCHLAUF: Beschreibungen verbessern ===")
+
+    for filepath in output_files:
+        print(f"\n  Verarbeite {filepath} ...")
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"  Fehler beim Laden: {e}")
+            continue
+
+        jobs = data.get('jobs', [])
+        improved = 0
+
+        for job in jobs:
+            desc = job.get('description', '')
+            if not needs_improvement(desc):
+                continue
+
+            print(f"    Verbessere: {job.get('title', '')} @ {job.get('company', '')}")
+            prompt = f"""Du erhältst einen Ausschnitt einer Stellenbeschreibung für die Stelle "{job['title']}" bei "{job['company']}".
+Aufgabe:
+1. Entferne alle Telefonnummern, E-Mail-Adressen und URLs
+2. Schreibe abgeschnittene Sätze logisch zu Ende - nur basierend auf dem Kontext
+3. Strukturiere mit Abschnitten: Über die Stelle / Ihre Aufgaben / Ihr Profil / Wir bieten - aber NUR wenn diese Info im Text vorhanden ist
+4. Erfinde KEINE neuen Details die nicht im Text stehen
+5. Behalte alle originalen Formulierungen so nah wie möglich
+6. Gib nur den aufbereiteten Text zurück, kein Markdown, keine Erklärungen
+
+Originaltext:
+{desc}"""
+
+            try:
+                response = gemini_model.generate_content(prompt)
+                job['description'] = response.text.strip()
+                improved += 1
+                time.sleep(0.1)
+            except Exception as e:
+                print(f"    Gemini Fehler: {e}")
+                continue
+
+        data['jobs'] = jobs
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"  {improved} Beschreibungen verbessert → {filepath}")
+
+
 def main():
     print(f"Starte Scraper – {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     os.makedirs('data', exist_ok=True)
 
     all_combined = []
     now_str = datetime.now().strftime('%d.%m.%Y %H:%M')
+    output_files = []
 
     for kat in KATEGORIEN:
         print(f"\n=== {kat['name'].upper()} ===")
@@ -107,19 +173,31 @@ def main():
         with open(kat['output'], 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
         print(f"Gespeichert: {kat['output']}")
+        output_files.append(kat['output'])
 
         if kat['name'] != 'alle':
             all_combined.extend(jobs)
 
     # Kombinierte jobs.json für das Frontend (ohne alle-jobs)
+    combined_path = 'data/jobs.json'
     combined = {
         'updated': now_str,
         'total':   len(all_combined),
         'jobs':    all_combined,
     }
-    with open('data/jobs.json', 'w', encoding='utf-8') as f:
+    with open(combined_path, 'w', encoding='utf-8') as f:
         json.dump(combined, f, ensure_ascii=False, indent=2)
-    print(f"\nKombinierte Datei gespeichert: data/jobs.json ({len(all_combined)} Jobs)")
+    print(f"\nKombinierte Datei gespeichert: {combined_path} ({len(all_combined)} Jobs)")
+    output_files.append(combined_path)
+
+    # Zweiter Durchlauf: Gemini verbessert kurze/abgeschnittene Beschreibungen
+    api_key = os.environ.get('GEMINI_API_KEY')
+    if api_key:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        improve_descriptions(model, output_files)
+    else:
+        print("\nGEMINI_API_KEY nicht gesetzt – zweiter Durchlauf übersprungen.")
 
 
 if __name__ == '__main__':
