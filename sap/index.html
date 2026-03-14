@@ -181,21 +181,23 @@
       <form id="applyForm" onsubmit="submitForm(event)">
         <input type="hidden" name="stelle" id="hiddenStelle">
         <input type="hidden" name="unternehmen" id="hiddenUnternehmen">
+        <input type="hidden" name="title" id="hiddenTitle">
+        <input type="hidden" name="from_email" id="hiddenFromEmail">
         <div class="form-group">
           <label>Vollständiger Name *</label>
           <input type="text" name="name" required placeholder="Max Mustermann">
         </div>
         <div class="form-group">
           <label>E-Mail-Adresse *</label>
-          <input type="email" name="email" required placeholder="max@beispiel.ch">
+          <input type="email" name="email" id="fieldEmail" required placeholder="max@beispiel.ch">
         </div>
         <div class="form-group">
           <label>Telefonnummer</label>
-          <input type="tel" name="telefon" placeholder="+41 79 123 45 67">
+          <input type="tel" name="phone" placeholder="+41 79 123 45 67">
         </div>
         <div class="form-group">
           <label>Kurze Vorstellung</label>
-          <textarea name="vorstellung" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
+          <textarea name="message" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
         </div>
         <div class="form-group">
           <label>Lebenslauf (PDF oder Word)</label>
@@ -357,6 +359,7 @@ function openPopup(i) {
   document.getElementById('ppDesc').innerHTML = formatDesc(job.description);
   document.getElementById('hiddenStelle').value = job.title;
   document.getElementById('hiddenUnternehmen').value = job.company;
+  document.getElementById('hiddenTitle').value = job.title;
   document.getElementById('applyForm').style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
   document.getElementById('errorMsg').style.display = 'none';
@@ -380,6 +383,8 @@ async function submitForm(e) {
   btn.disabled = true;
   btn.textContent = 'Wird gesendet…';
   errEl.style.display = 'none';
+  // from_email spiegelt den Email-Wert für EmailJS Reply-To
+  document.getElementById('hiddenFromEmail').value = document.getElementById('fieldEmail').value;
   try {
     await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
     document.getElementById('applyForm').style.display = 'none';
