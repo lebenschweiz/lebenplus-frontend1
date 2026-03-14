@@ -132,12 +132,13 @@
   .popup-overlay.open { display: flex; }
   .popup { 
     background: var(--bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; 
-    width: 100%; max-width: 1100px; max-height: 90vh; display: grid; grid-template-columns: 1.2fr 1fr; 
+    width: 100%; max-width: 1100px; height: 90vh;
+    display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: 1fr;
     overflow: hidden; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.6);
     animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(20px)} to{opacity:1;transform:none} }
-  @media(max-width:850px) { .popup { grid-template-columns: 1fr; max-height: 95vh; padding: 0; } }
+  @media(max-width:850px) { .popup { grid-template-columns: 1fr; height: 95vh; } }
 
   .popup-close { 
     position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.5); 
@@ -147,10 +148,17 @@
   }
   .popup-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
-  .popup-detail { padding: 3rem; overflow-y: auto; max-height: 90vh; min-height: 0; scrollbar-width: thin; scrollbar-color: #e85d2f #1a1a1a; background: var(--card); }
+  /* Grid children: min-height:0 lets them shrink, overflow-y:auto enables scroll */
+  /* No max-height here — the parent .popup height already constrains them */
+  .popup-detail { 
+    padding: 3rem; overflow-y: auto; min-height: 0;
+    scrollbar-width: thin; scrollbar-color: #e85d2f #1a1a1a; 
+    background: var(--card); 
+  }
   .popup-detail::-webkit-scrollbar { width: 6px; }
   .popup-detail::-webkit-scrollbar-track { background: #1a1a1a; }
   .popup-detail::-webkit-scrollbar-thumb { background: #e85d2f; border-radius: 3px; }
+
   .popup-company-row { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
   .popup-logo { 
     width: 64px; height: 64px; border-radius: 16px; 
@@ -393,7 +401,6 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-
   t = t.replace(/^\s*STELLENBESCHREIBUNG\s*[\n\r]*/i, '');
   t = t.replace(/(?:Tel\.?|Telefon(?:nummer)?|Mobile?|Mobil|Natel|Fax)\s*:?\s*[\+\d\s\.\-\/\(\)]{4,30}/gi, '');
   t = t.replace(/(\+41|0041)\s?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
@@ -405,7 +412,6 @@ function formatDesc(text) {
   t = t.replace(/\.{3,}\s*(\n|$)/gm, '.$1');
   t = t.replace(/…\s*(\n|$)/gm, '.$1');
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
   const knownSections = [
     'Über die Stelle','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
     'Ihr Profil','Dein Profil','Profil','Anforderungsprofil','Anforderungen',
@@ -419,7 +425,6 @@ function formatDesc(text) {
   });
   t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
     (match, pre, title) => pre + '\x02' + title.trim() + '\x03');
-
   const lines = t.split('\n');
   const out = [];
   const bulletItems = [];
