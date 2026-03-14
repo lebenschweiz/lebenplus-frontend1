@@ -195,7 +195,7 @@
           <textarea name="message" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
         </div>
         <div class="form-group">
-          <label>Lebenslauf (PDF oder Word)</label>
+          <label>Lebenslauf (PDF oder Word, max. 500 KB)</label>
           <div class="file-upload">
             <div>📎 Datei auswählen</div>
             <div class="file-name" id="fileName"></div>
@@ -309,6 +309,14 @@ async function submitForm(e) {
   btn.disabled = true;
   btn.textContent = 'Wird gesendet…';
   errEl.style.display = 'none';
+  const fileInput = e.target.querySelector('input[type="file"]');
+  if (fileInput?.files[0]?.size > 512000) {
+    errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 500 KB hochladen.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Bewerbung absenden →';
+    return;
+  }
   document.getElementById('hiddenFromEmail').value = document.getElementById('fieldEmail').value;
   try {
     await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', e.target);
