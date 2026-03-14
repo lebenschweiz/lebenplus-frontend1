@@ -167,6 +167,8 @@
   .popup-desc-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
   .popup-description { font-size: 1.05rem; line-height: 1.8; color: #d4d4d8; }
   .popup-description strong { color: white; font-weight: 600; }
+  .popup-description ul { margin: 0.6rem 0 0.6rem 1.4rem; padding: 0; color: #d4d4d8; }
+  .popup-description li { margin-bottom: 0.3rem; }
   .desc-section { color: #e85d2f; font-weight: 700; font-family: var(--font-head); font-size: 1rem; display: block; margin-top: 1.8rem; margin-bottom: 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(232,93,47,0.2); }
   .desc-section:first-child { margin-top: 0; }
 
@@ -391,35 +393,112 @@ function formatDesc(text) {
   if (!text) return '<em style="color:var(--text-muted)">Keine Beschreibung verfügbar.</em>';
   if (text.includes('<') && text.includes('>')) return text;
   let t = text;
-  t = t.replace(/(\+41|0041|041|0\d{2})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
+
+  // Remove STELLENBESCHREIBUNG header
+  t = t.replace(/^\s*STELLENBESCHREIBUNG\s*[\n\r]*/i, '');
+
+  // Remove phone numbers (all common formats)
+  t = t.replace(/(?:Tel\.?|Telefon(?:nummer)?|Mobile?|Mobil|Natel|Fax)\s*:?\s*[\+\d\s\.\-\/\(\)]{4,30}/gi, '');
+  t = t.replace(/(\+41|0041)\s?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g, '');
+  t = t.replace(/0\d{2}[\s\-]\d{3}[\s\-]\d{2}[\s\-]\d{2}/g, '');
   t = t.replace(/(\+49|\+43|\+33|00\d{2})[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{3,}[\s\-]?\d{2,}/g, '');
-  t = t.replace(/(?:Tel\.?|Telefon|Telefonnummer|Mobile?|Mobil|Fax)[\s:]*[\+\d\s\.\-\/\(\)]{4,25}/gi, '');
+
+  // Remove email addresses
   t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '');
+
+  // Remove URLs
   t = t.replace(/https?:\/\/[^\s<>"'\n]+/g, '');
   t = t.replace(/www\.[^\s<>"'\n]+/g, '');
-  t = t.replace(/\.{3,}(\s*\n)/g, '.$1');
-  t = t.replace(/\.{3,}\s*$/gm, '.');
-  t = t.replace(/…(\s*\n)/g, '.$1');
-  t = t.replace(/…\s*$/gm, '.');
-  t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
-    (match, pre, title) => pre + '<span class="desc-section">' + title.trim() + '</span>');
-  const sections = [
-    'Ihre Hauptaufgaben','Deine Hauptaufgaben','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
-    'Ihr Profil','Dein Profil','Anforderungsprofil','Profil',
-    'Was wir bieten','Wir bieten','Das bieten wir','Benefits','Benefit',
-    'Anforderungen','Qualifikationen','Das bringst du mit','Das bringen Sie mit',
-    'Über uns','Über die Stelle','Kontakt','Stellenbeschreibung'
+
+  // Fix truncated sentences ending with ...
+  t = t.replace(/\.{3,}\s*(\n|$)/gm, '.$1');
+  t = t.replace(/…\s*(\n|$)/gm, '.$1');
+
+  // Bold markdown
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Known section titles → format as section headers
+  const knownSections = [
+    'Über die Stelle','Ihre Aufgaben','Deine Aufgaben','Aufgaben','Aufgabenbereich',
+    'Ihr Profil','Dein Profil','Profil','Anforderungsprofil','Anforderungen',
+    'Wir bieten','Was wir bieten','Das bieten wir','Benefits','Benefit',
+    'Das bringen Sie mit','Das bringst du mit','Qualifikationen',
+    'Kontakt','Über uns','Stellenbeschreibung'
   ];
-  sections.forEach(s => {
+  knownSections.forEach(s => {
     const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     t = t.replace(new RegExp('(^|\\n)(' + esc + ')(\\s*:?\\s*)(?=\\n|$)', 'gim'),
-      '$1<span class="desc-section">$2</span>');
+      '$1\x02' + s + '\x03');
   });
-  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  t = t.replace(/\n\n+/g, '<br><br>');
-  t = t.replace(/\n[•\-\*]\s/g, '<br>• ');
+
+  // ALL-CAPS lines → section titles (min 4 chars uppercase)
+  t = t.replace(/(^|\n)([A-ZÄÖÜ][A-ZÄÖÜ\s\/\-]{3,}:?)(?=\s*\n|$)/gm,
+    (match, pre, title) => pre + '\x02' + title.trim() + '\x03');
+
+  // Process line by line: bullet points, sentence fixes
+  const lines = t.split('\n');
+  const out = [];
+  const bulletItems = [];
+
+  const flushBullets = () => {
+    if (bulletItems.length) {
+      out.push('<ul style="margin:0.6rem 0 0.6rem 1.4rem;padding:0;color:#d4d4d8">' + bulletItems.join('') + '</ul>');
+      bulletItems.length = 0;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const trimmed = raw.trim();
+
+    // Section title placeholder
+    if (trimmed.startsWith('\x02') && trimmed.endsWith('\x03')) {
+      flushBullets();
+      out.push('<span class="desc-section">' + trimmed.slice(1, -1) + '</span>');
+      continue;
+    }
+
+    // Bullet point
+    if (/^[•\-\*]\s/.test(trimmed)) {
+      const content = trimmed.replace(/^[•\-\*]\s+/, '');
+      bulletItems.push('<li style="margin-bottom:0.25rem">' + content + '</li>');
+      continue;
+    }
+
+    flushBullets();
+
+    // Empty line
+    if (!trimmed) { out.push(''); continue; }
+
+    // Join lines starting with lowercase to previous sentence
+    if (out.length > 0 && /^[a-zäöüàáèéìíòóùú]/.test(trimmed)) {
+      const lastIdx = out.length - 1;
+      const last = out[lastIdx].trimEnd();
+      if (last && !last.startsWith('<') && !last.endsWith('>')) {
+        out[lastIdx] = last + ' ' + trimmed;
+        continue;
+      }
+    }
+
+    // Add closing period to lines ending with comma or letter (not punctuation)
+    let fixed = raw.trimEnd();
+    if (/[,a-zA-ZäöüÄÖÜß]$/.test(fixed)) {
+      fixed += '.';
+    }
+
+    out.push(fixed);
+  }
+  flushBullets();
+
+  t = out.join('\n');
+
+  // Paragraphs and line breaks
+  t = t.replace(/\n{2,}/g, '<br><br>');
   t = t.replace(/\n/g, '<br>');
-  t += '<div style="margin-top:1.5rem;padding:1rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:4px;"><p style="margin:0;color:#ccc;font-size:0.9rem;">Interessiert? Wir freuen uns auf Ihre Bewerbung! Füllen Sie das Formular aus und wir melden uns umgehend bei Ihnen. Für weitere Informationen zu dieser Stelle stehen wir Ihnen gerne zur Verfügung.</p></div>';
+
+  // CTA block
+  t += '<div style="margin-top:1.5rem;padding:1rem 1.2rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:6px"><p style="margin:0 0 0.4rem;color:#e85d2f;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em">Interesse geweckt?</p><p style="margin:0;color:#ccc;font-size:0.88rem;line-height:1.6">Wir freuen uns auf Ihre Bewerbung! Füllen Sie das Formular aus und wir melden uns umgehend bei Ihnen. Für weitere Informationen zu dieser Stelle stehen wir Ihnen gerne zur Verfügung.</p></div>';
+
   return t;
 }
 
