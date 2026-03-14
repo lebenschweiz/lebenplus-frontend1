@@ -138,7 +138,20 @@
     animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(20px)} to{opacity:1;transform:none} }
-  @media(max-width:850px) { .popup { grid-template-columns: 1fr; height: 95vh; } }
+
+  /* Mobile: stack sections vertically, popup scrolls as one unit */
+  @media(max-width:850px) {
+    .popup {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      height: auto;
+      max-height: 95vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .popup-detail, .popup-apply { overflow-y: visible; min-height: unset; }
+    .popup-overlay { padding: 1rem; align-items: flex-start; }
+  }
 
   .popup-close { 
     position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.5); 
@@ -148,8 +161,6 @@
   }
   .popup-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
 
-  /* Grid children: min-height:0 lets them shrink, overflow-y:auto enables scroll */
-  /* No max-height here — the parent .popup height already constrains them */
   .popup-detail { 
     padding: 3rem; overflow-y: auto; min-height: 0;
     scrollbar-width: thin; scrollbar-color: #e85d2f #1a1a1a; 
