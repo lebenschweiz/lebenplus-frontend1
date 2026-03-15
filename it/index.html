@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Jobs Schweiz – lebenplus-jobs.ch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('6Ra4TSz45CcgUI88j');</script>
+<style>
+  :root { --bg:#0f0f0f; --card:#181818; --border:#2a2a2a; --accent:#e85d2f; --accent2:#ff8c5a; --text:#f0f0f0; --muted:#888; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+  nav { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 2rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(10px); z-index:100; }
+  .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem; color:var(--text); text-decoration:none; }
+  .logo span { color:var(--accent); }
+  .nav-links { display:flex; gap:2rem; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
+  .nav-links a:hover,.nav-links a.active { color:var(--text); }
+  .hero { padding:5rem 2rem 3rem; max-width:960px; margin:0 auto; }
+  .hero-tag { display:inline-block; background:var(--accent); color:white; font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:2px; margin-bottom:1.5rem; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2.5rem,6vw,4.5rem); font-weight:800; line-height:1.05; margin-bottom:1.2rem; }
+  .hero h1 em { color:var(--accent); font-style:normal; }
+  .hero p { color:var(--muted); font-size:1.1rem; line-height:1.6; max-width:550px; }
+  .hero-stats { display:flex; gap:2.5rem; margin-top:2.5rem; }
+  .stat-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); }
+  .stat-label { font-size:0.8rem; color:var(--muted); margin-top:0.2rem; }
+  .search-wrap { max-width:960px; margin:0 auto 2rem; padding:0 2rem; }
+  .search-box { display:flex; gap:0.75rem; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; }
+  .search-box input { flex:1; background:none; border:none; color:var(--text); font-size:1rem; font-family:'Inter',sans-serif; outline:none; }
+  .search-box input::placeholder { color:var(--muted); }
+  .search-box button { background:var(--accent); color:white; border:none; padding:0.6rem 1.5rem; border-radius:5px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:background 0.2s; }
+  .search-box button:hover { background:var(--accent2); }
+  .jobs-wrap { max-width:960px; margin:0 auto; padding:0 2rem 4rem; }
+  .jobs-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+  .jobs-header h2 { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:700; }
+  .jobs-count { font-size:0.9rem; color:var(--muted); }
+  .updated { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+  .jobs-grid { display:grid; gap:1rem; }
+  .job-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.5rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; overflow:hidden; }
+  .job-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); transform:scaleY(0); transition:transform 0.2s; transform-origin:bottom; }
+  .job-card:hover { border-color:#444; transform:translateY(-2px); }
+  .job-card:hover::before { transform:scaleY(1); }
+  .job-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:0.8rem; }
+  .job-logo { width:42px; height:42px; border-radius:8px; background:#222; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:var(--accent); flex-shrink:0; }
+  .job-badge { background:rgba(232,93,47,0.15); color:var(--accent); font-size:0.7rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px; letter-spacing:0.05em; text-transform:uppercase; }
+  .job-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; margin-bottom:0.3rem; line-height:1.3; }
+  .job-company { color:var(--muted); font-size:0.88rem; }
+  .job-desc-preview { color:#aaa; font-size:0.85rem; line-height:1.5; margin-top:0.8rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .job-meta { display:flex; gap:1.2rem; margin-top:1rem; flex-wrap:wrap; }
+  .job-meta span { font-size:0.8rem; color:var(--muted); }
+  .job-apply { display:inline-block; margin-top:1rem; color:var(--accent); font-size:0.85rem; font-weight:600; }
+  .popup-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:200; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
+  .popup-overlay.open { display:flex; }
+  .popup { background:#1a1a1a; border:1px solid #333; border-radius:18px; width:100%; max-width:940px; height:90vh; display:grid; grid-template-columns:1fr 380px; grid-template-rows:1fr; overflow:hidden; position:relative; animation:popIn 0.25s cubic-bezier(0.34,1.4,0.64,1); box-shadow:0 30px 70px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04); }
+  @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(12px)} to{opacity:1;transform:none} }
+  @media(max-width:700px) { .popup { grid-template-columns:1fr; grid-template-rows:auto auto; height:auto; max-height:95vh; overflow-y:auto; overflow-x:hidden; } .popup-detail, .popup-apply { overflow-y:visible; min-height:unset; } .popup-overlay { padding:0.5rem; align-items:flex-start; } }
+  .popup-close { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:10; font-size:0.9rem; transition:background 0.2s,color 0.2s,transform 0.15s; }
+  .popup-close:hover { color:var(--text); background:rgba(255,255,255,0.12); transform:scale(1.1); }
+  .popup-detail { padding:2.5rem; overflow-y:auto; min-height:0; scrollbar-width:thin; scrollbar-color:#e85d2f #1a1a1a; border-right:1px solid var(--border); }
+  .popup-detail::-webkit-scrollbar { width:6px; }
+  .popup-detail::-webkit-scrollbar-track { background:#1a1a1a; }
+  .popup-detail::-webkit-scrollbar-thumb { background:#e85d2f; border-radius:3px; }
+  .popup-company-row { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+  .popup-logo { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#e85d2f,#ff8c5a); border:none; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; color:white; flex-shrink:0; box-shadow:0 6px 16px rgba(232,93,47,0.35); }
+  .popup-company-name { color:#bbb; font-size:0.92rem; font-weight:500; }
+  .popup-job-title { font-family:'Syne',sans-serif; font-size:1.45rem; font-weight:800; line-height:1.2; margin-bottom:1.1rem; }
+  .popup-meta-row { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; }
+  .popup-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:#ccc; background:rgba(255,255,255,0.06); padding:0.35rem 0.9rem; border-radius:20px; border:1px solid rgba(255,255,255,0.08); }
+  .popup-apply { padding:2rem; overflow-y:auto; min-height:0; background:#151515; }
+  .apply-title { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; margin-bottom:1.5rem; }
+  .form-group { margin-bottom:1.1rem; }
+  .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#aaa; margin-bottom:0.45rem; letter-spacing:0.04em; text-transform:uppercase; }
+  .form-group input, .form-group textarea { width:100%; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.85rem 1rem; color:var(--text); font-family:'Inter',sans-serif; font-size:0.95rem; transition:border-color 0.2s,background 0.2s; }
+  .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); background:#222; }
+  .form-group textarea { resize:vertical; min-height:90px; }
+  .file-upload { width:100%; background:#1e1e1e; border:1px dashed #333; border-radius:8px; padding:1rem; text-align:center; cursor:pointer; color:var(--muted); font-size:0.85rem; position:relative; transition:border-color 0.2s,background 0.2s; }
+  .file-upload:hover { border-color:var(--accent); background:#222; }
+  .file-upload input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .file-name { font-size:0.8rem; color:var(--accent); margin-top:0.3rem; }
+  .submit-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:9px; padding:1.05rem; font-size:1.05rem; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:background 0.2s,transform 0.15s; margin-top:0.75rem; letter-spacing:0.02em; }
+  .submit-btn:hover { background:var(--accent2); transform:translateY(-1px); }
+  .submit-btn:active { transform:translateY(0); }
+  .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+  .error-msg { display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:0.7rem 1rem; margin-top:0.75rem; color:#fca5a5; font-size:0.85rem; line-height:1.5; }
+  .success-msg { display:none; text-align:center; padding:3rem 1rem; }
+  .success-msg .check { font-size:3rem; margin-bottom:1rem; }
+  .success-msg h3 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:0.6rem; }
+  .success-msg p { color:var(--muted); font-size:0.9rem; }
+  .loading { text-align:center; padding:4rem; color:var(--muted); }
+  .no-jobs { text-align:center; padding:4rem; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">lebenplus<span>-jobs</span></a>
+  <div class="nav-links">
+    <a href="/pflege">Pflege</a>
+    <a href="/sap">SAP</a>
+    <a href="/it" class="active">IT</a>
+    <a href="/">Alle Jobs</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">IT &amp; Informatik</div>
+  <h1>IT Jobs<br>in der <em>Schweiz.</em></h1>
+  <p>Aktuelle IT-Stellen: Software-Entwicklung, Cybersecurity, Cloud, DevOps, Data Science und mehr – täglich aktualisiert.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" id="totalJobs">–</div><div class="stat-label">Stellen verfügbar</div></div>
+    <div class="stat"><div class="stat-num">Täglich</div><div class="stat-label">aktualisiert</div></div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Stichwort suchen, z.B. Zürich, Python, DevOps …" oninput="filterJobs()">
+    <button onclick="filterJobs()">Suchen</button>
+  </div>
+</div>
+
+<div class="jobs-wrap">
+  <div class="jobs-header">
+    <div>
+      <h2>Aktuelle Stellen</h2>
+      <div class="updated" id="updatedAt"></div>
+    </div>
+    <div class="jobs-count" id="jobsCount"></div>
+  </div>
+  <div class="jobs-grid" id="jobsGrid"><div class="loading">Jobs werden geladen …</div></div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopupOnBg(event)">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-detail">
+      <div class="popup-company-row">
+        <div class="popup-logo" id="ppLogo"></div>
+        <div class="popup-company-name" id="ppCompany"></div>
+      </div>
+      <div class="popup-job-title" id="ppTitle"></div>
+      <div class="popup-meta-row" id="ppMeta"></div>
+      <div style="padding:1.2rem;background:#1f1f1f;border-left:3px solid #e85d2f;border-radius:6px;margin:1.5rem 0">
+        <p style="margin:0 0 0.5rem;color:#e85d2f;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em">Interessiert?</p>
+        <p style="margin:0;color:#ccc;font-size:0.92rem;line-height:1.6">Senden Sie uns eine kurze Anfrage – wir melden uns umgehend mit allen Details zu dieser Stelle.</p>
+      </div>
+    </div>
+    <div class="popup-apply">
+      <div class="apply-title">Jetzt bewerben</div>
+      <form id="applyForm" name="bewerbung-it">
+        <div class="form-group">
+          <label>Vollständiger Name *</label>
+          <input type="text" id="fieldName" required placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label>E-Mail-Adresse *</label>
+          <input type="email" id="fieldEmail" required placeholder="max@beispiel.ch">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer</label>
+          <input type="tel" id="fieldPhone" placeholder="+41 79 123 45 67">
+        </div>
+        <div class="form-group">
+          <label>Kurze Vorstellung</label>
+          <textarea id="fieldMessage" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Lebenslauf (PDF oder Word, max. 500 KB)</label>
+          <div class="file-upload">
+            <div>📎 Datei auswählen</div>
+            <div class="file-name" id="fileName"></div>
+            <input type="file" id="fieldFile" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+          </div>
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+        <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Bewerbung absenden →</button>
+      </form>
+      <div class="success-msg" id="successMsg">
+        <div class="check">✅</div>
+        <h3>Bewerbung gesendet!</h3>
+        <p>Wir leiten Ihre Bewerbung weiter.<br>Sie hören bald von uns.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let allJobs = [];
+let currentFiltered = [];
+let currentJob = null;
+
+async function loadJobs() {
+  try {
+    const r = await fetch('/data/it-jobs.json?t=' + Date.now());
+    const data = await r.json();
+    allJobs = data.jobs || [];
+    document.getElementById('totalJobs').textContent = data.total || allJobs.length;
+    document.getElementById('updatedAt').textContent = 'Zuletzt aktualisiert: ' + (data.updated || '');
+    renderJobs(allJobs);
+  } catch(e) {
+    document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Fehler beim Laden.</div>';
+  }
+}
+
+function stripHtml(h) { return (h||'').replace(/<[^>]*>/g,'').trim(); }
+function formatDate(d) {
+  if (!d) return '';
+  try { return new Date(d).toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+  catch(e) { return d; }
+}
+
+function renderJobs(jobs) {
+  currentFiltered = jobs;
+  document.getElementById('jobsCount').textContent = jobs.length + ' Stellen gefunden';
+  if (!jobs.length) { document.getElementById('jobsGrid').innerHTML = '<div class="no-jobs">Keine Stellen gefunden.</div>'; return; }
+  document.getElementById('jobsGrid').innerHTML = jobs.map((job,i) => `
+    <div class="job-card" onclick="openPopup(${i})">
+      <div class="job-top">
+        <div class="job-logo">${(job.company||'?')[0].toUpperCase()}</div>
+        <span class="job-badge">IT</span>
+      </div>
+      <div class="job-title">${job.title}</div>
+      <div class="job-company">${job.company||'Unbekannt'}</div>
+      ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
+      <div class="job-meta">
+        <span>📍 ${job.locations||'Schweiz'}</span>
+        <span>📅 ${formatDate(job.date)}</span>
+        ${job.salary?`<span>💰 ${job.salary}`:''}
+      </div>
+      <span class="job-apply">Details &amp; Bewerben →</span>
+    </div>
+  `).join('');
+}
+
+function filterJobs() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  renderJobs(!q ? allJobs : allJobs.filter(j =>
+    (j.title||'').toLowerCase().includes(q) ||
+    (j.company||'').toLowerCase().includes(q) ||
+    (j.locations||'').toLowerCase().includes(q)
+  ));
+}
+
+function openPopup(i) {
+  const job = currentFiltered[i];
+  if (!job) return;
+  currentJob = job;
+  document.getElementById('ppLogo').textContent = (job.company||'?')[0].toUpperCase();
+  document.getElementById('ppCompany').textContent = job.company||'';
+  document.getElementById('ppTitle').textContent = job.title||'';
+  let meta = '';
+  if (job.locations) meta += `<span class="popup-meta-item">📍 ${job.locations}</span>`;
+  if (job.date)      meta += `<span class="popup-meta-item">📅 ${formatDate(job.date)}</span>`;
+  if (job.salary)    meta += `<span class="popup-meta-item">💰 ${job.salary}</span>`;
+  document.getElementById('ppMeta').innerHTML = meta;
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('applyForm').reset();
+  document.getElementById('fileName').textContent = '';
+  document.getElementById('popupOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.querySelector('.popup-detail').scrollTop = 0;
+  document.querySelector('.popup-apply').scrollTop = 0;
+}
+
+function closePopup() {
+  document.getElementById('popupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closePopupOnBg(e) { if(e.target===document.getElementById('popupOverlay')) closePopup(); }
+function showFileName(input) { document.getElementById('fileName').textContent = input.files[0]?.name||''; }
+
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('errorMsg');
+  const nameVal  = document.getElementById('fieldName').value.trim();
+  const emailVal = document.getElementById('fieldEmail').value.trim();
+
+  if (!nameVal || !emailVal) {
+    errEl.textContent = 'Bitte Name und E-Mail-Adresse ausfüllen.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const fileInput = document.getElementById('fieldFile');
+  const file = fileInput?.files[0];
+
+  if (file && file.size > 512000) {
+    errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 500 KB hochladen.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  errEl.style.display = 'none';
+
+  try {
+    const templateParams = {
+      stelle:      currentJob?.title || '',
+      unternehmen: currentJob?.company || '',
+      title:       currentJob?.title || '',
+      from_email:  emailVal,
+      name:        nameVal,
+      email:       emailVal,
+      phone:       document.getElementById('fieldPhone')?.value || '',
+      message:     document.getElementById('fieldMessage')?.value || '',
+    };
+
+    if (file) {
+      const dataUrl = await readFileAsDataURL(file);
+      templateParams.lebenslauf      = dataUrl;
+      templateParams.lebenslauf_name = file.name;
+    }
+
+    await emailjs.send('service_9f6wp97', 'template_u5grmqf', templateParams);
+    document.getElementById('applyForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    setTimeout(closePopup, 3000);
+  } catch(err) {
+    console.error('EmailJS Fehler:', err);
+    const msg = err?.text || err?.message || JSON.stringify(err);
+    errEl.textContent = 'Fehler beim Senden: ' + msg;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Bewerbung absenden →';
+  }
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
+loadJobs();
+</script>
+</body>
+</html>
