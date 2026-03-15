@@ -6,6 +6,25 @@ from datetime import datetime
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
 PAGES       = 20
+ALLE_PAGES  = 50
+
+ALLE_KEYWORDS = [
+    'Kaufmann Kauffrau',
+    'Verkauf Detailhandel',
+    'Logistik Transport',
+    'Buchhaltung Finanzen',
+    'Marketing Kommunikation',
+    'HR Personal Recruiting',
+    'Gastronomie Koch',
+    'Reinigung Hauswirtschaft',
+    'Lager Produktion',
+    'Kundenservice Support',
+    'Bauleiter Architekt',
+    'Lehrer Pädagoge',
+    'Sozialarbeit Betreuung',
+    'Pharma Chemie',
+    'Recht Anwalt',
+]
 
 KATEGORIEN = [
     {
@@ -34,26 +53,29 @@ KATEGORIEN = [
     },
     {
         'name': 'alle',
-        'keywords': ['Stellen Schweiz'],
+        'keywords': ALLE_KEYWORDS,
         'location': 'Schweiz',
         'output': 'data/alle-jobs.json',
-        'max_jobs': 200,
+        'max_jobs': 2000,
+        'pages': ALLE_PAGES,
     },
 ]
 
 # Begriffe die im Titel vorkommen → Job wird aus alle-jobs.json herausgefiltert
-EXCLUDE_TERMS = [
-    'pflege', 'pflegefach', 'arzt', 'ärztin', 'arztpraxis', 'apotheker', 'apotheke',
-    'sap', 'ingenieur', 'maschinenbau', 'automatisierung', 'elektro', 'elektriker',
-    'software', 'entwickler', 'it-', 'informatik', 'cybersecurity',
+FILTER_BEGRIFFE = [
+    'pflege', 'pflegefach', 'arzt', 'ärztin', 'apothek',
+    'sap', 'software', 'entwickler', 'informatik', 'devops',
+    'cloud', 'cybersecurity', 'data scientist', 'frontend',
+    'backend', 'ingenieur', 'maschinenbau', 'elektriker',
+    'it-', ' it ', 'programmer',
 ]
 
 
 def filter_jobs(jobs):
-    """Filtert Jobs heraus deren Titel einen der EXCLUDE_TERMS enthält."""
+    """Filtert Jobs heraus deren Titel einen der FILTER_BEGRIFFE enthält."""
     def is_excluded(job):
         title = (job.get('title') or '').lower()
-        return any(term in title for term in EXCLUDE_TERMS)
+        return any(term in title for term in FILTER_BEGRIFFE)
     return [j for j in jobs if not is_excluded(j)]
 
 
@@ -69,11 +91,11 @@ def set_standard_description(job):
     )
 
 
-def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls):
+def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls, pages=PAGES):
     """Holt Jobs für ein einzelnes Keyword über mehrere Seiten."""
     collected = []
 
-    for page in range(1, PAGES + 1):
+    for page in range(1, pages + 1):
         if len(collected) >= max_jobs:
             break
 
@@ -120,7 +142,7 @@ def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls):
     return collected
 
 
-def fetch_jobs(keywords, location, max_jobs=200):
+def fetch_jobs(keywords, location, max_jobs=200, pages=PAGES):
     """Holt Jobs für eine Liste von Keywords (dedupliziert nach URL)."""
     all_jobs = []
     seen_urls = set()
@@ -128,7 +150,7 @@ def fetch_jobs(keywords, location, max_jobs=200):
     for keyword in keywords:
         if len(all_jobs) >= max_jobs:
             break
-        jobs = fetch_jobs_for_keyword(keyword, location, max_jobs - len(all_jobs), seen_urls)
+        jobs = fetch_jobs_for_keyword(keyword, location, max_jobs - len(all_jobs), seen_urls, pages=pages)
         all_jobs.extend(jobs)
         print(f"  → '{keyword}': {len(jobs)} neue Jobs (gesamt: {len(all_jobs)})")
 
@@ -145,7 +167,8 @@ def main():
 
     for kat in KATEGORIEN:
         print(f"\n=== {kat['name'].upper()} ===")
-        jobs = fetch_jobs(kat['keywords'], kat['location'], kat.get('max_jobs', 200))
+        pages = kat.get('pages', PAGES)
+        jobs = fetch_jobs(kat['keywords'], kat['location'], kat.get('max_jobs', 200), pages=pages)
 
         if kat['name'] == 'alle':
             before = len(jobs)
