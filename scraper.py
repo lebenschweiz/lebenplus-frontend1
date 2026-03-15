@@ -25,6 +25,14 @@ KATEGORIEN = [
         'max_jobs': 200,
     },
     {
+        'name': 'it',
+        'keywords': ['Software', 'Entwickler', 'Informatik', 'DevOps', 'Cloud',
+                     'Cybersecurity', 'Data Scientist', 'Programmer', 'Frontend', 'Backend'],
+        'location': 'Schweiz',
+        'output': 'data/it-jobs.json',
+        'max_jobs': 200,
+    },
+    {
         'name': 'alle',
         'keywords': ['Stellen Schweiz'],
         'location': 'Schweiz',
