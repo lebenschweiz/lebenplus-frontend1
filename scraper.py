@@ -52,6 +52,14 @@ KATEGORIEN = [
         'max_jobs': 200,
     },
     {
+        'name': 'lehrer',
+        'keywords': ['Lehrer', 'Lehrperson', 'Dozent', 'Pädagoge', 'Schulleiter',
+                     'Kindergarten', 'Primarstufe', 'Sekundarstufe', 'Berufsschule'],
+        'location': 'Schweiz',
+        'output': 'data/lehrer-jobs.json',
+        'max_jobs': 200,
+    },
+    {
         'name': 'alle',
         'keywords': ALLE_KEYWORDS,
         'location': 'Schweiz',
