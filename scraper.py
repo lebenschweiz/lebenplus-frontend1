@@ -55,6 +55,13 @@ KATEGORIEN = [
         'output': 'data/lehrer-jobs.json',
     },
     {
+        'name': 'aerzte',
+        'keywords': ['Arzt', 'Ärztin', 'Facharzt', 'Assistenzarzt', 'Hausarzt',
+                     'Oberarzt', 'Chefarzt', 'Medizin', 'Spital', 'Klinik'],
+        'location': 'Schweiz',
+        'output': 'data/aerzte-jobs.json',
+    },
+    {
         'name': 'alle',
         'keywords': ALLE_KEYWORDS,
         'location': 'Schweiz',
