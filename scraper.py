@@ -5,8 +5,7 @@ from datetime import datetime
 
 BACKEND_URL = 'https://lebenplus-backend.onrender.com/api/jobs'
 PAGE_SIZE   = 20
-PAGES       = 20
-ALLE_PAGES  = 50
+PAGES       = 50
 
 ALLE_KEYWORDS = [
     'Kaufmann Kauffrau',
@@ -33,7 +32,6 @@ KATEGORIEN = [
                      'Krankenpflege', 'Spitex', 'FaGe', 'Betagtenpflege', 'Heimleitung'],
         'location': 'Schweiz',
         'output': 'data/pflege-jobs.json',
-        'max_jobs': 200,
     },
     {
         'name': 'sap',
@@ -41,7 +39,6 @@ KATEGORIEN = [
                      'Informatik', 'Entwickler', 'DevOps', 'Cloud', 'Cybersecurity', 'Data'],
         'location': 'Schweiz',
         'output': 'data/sap-jobs.json',
-        'max_jobs': 200,
     },
     {
         'name': 'it',
@@ -49,7 +46,6 @@ KATEGORIEN = [
                      'Cybersecurity', 'Data Scientist', 'Programmer', 'Frontend', 'Backend'],
         'location': 'Schweiz',
         'output': 'data/it-jobs.json',
-        'max_jobs': 200,
     },
     {
         'name': 'lehrer',
@@ -57,15 +53,12 @@ KATEGORIEN = [
                      'Kindergarten', 'Primarstufe', 'Sekundarstufe', 'Berufsschule'],
         'location': 'Schweiz',
         'output': 'data/lehrer-jobs.json',
-        'max_jobs': 200,
     },
     {
         'name': 'alle',
         'keywords': ALLE_KEYWORDS,
         'location': 'Schweiz',
         'output': 'data/alle-jobs.json',
-        'max_jobs': 2000,
-        'pages': ALLE_PAGES,
     },
 ]
 
@@ -99,14 +92,11 @@ def set_standard_description(job):
     )
 
 
-def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls, pages=PAGES):
-    """Holt Jobs für ein einzelnes Keyword über mehrere Seiten."""
+def fetch_jobs_for_keyword(keyword, location, seen_urls):
+    """Holt alle Jobs für ein einzelnes Keyword über alle verfügbaren Seiten."""
     collected = []
 
-    for page in range(1, pages + 1):
-        if len(collected) >= max_jobs:
-            break
-
+    for page in range(1, PAGES + 1):
         params = {'keywords': keyword, 'location': location, 'pagesize': PAGE_SIZE, 'page': page}
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
@@ -122,8 +112,6 @@ def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls, pages=PAGES):
                 break
 
             for job in jobs:
-                if len(collected) >= max_jobs:
-                    break
                 url = job.get('url', '')
                 if url in seen_urls:
                     continue
@@ -150,15 +138,13 @@ def fetch_jobs_for_keyword(keyword, location, max_jobs, seen_urls, pages=PAGES):
     return collected
 
 
-def fetch_jobs(keywords, location, max_jobs=200, pages=PAGES):
-    """Holt Jobs für eine Liste von Keywords (dedupliziert nach URL)."""
+def fetch_jobs(keywords, location):
+    """Holt alle Jobs für eine Liste von Keywords (dedupliziert nach URL)."""
     all_jobs = []
     seen_urls = set()
 
     for keyword in keywords:
-        if len(all_jobs) >= max_jobs:
-            break
-        jobs = fetch_jobs_for_keyword(keyword, location, max_jobs - len(all_jobs), seen_urls, pages=pages)
+        jobs = fetch_jobs_for_keyword(keyword, location, seen_urls)
         all_jobs.extend(jobs)
         print(f"  → '{keyword}': {len(jobs)} neue Jobs (gesamt: {len(all_jobs)})")
 
@@ -171,12 +157,10 @@ def main():
 
     all_combined = []
     now_str = datetime.now().strftime('%d.%m.%Y %H:%M')
-    output_files = []
 
     for kat in KATEGORIEN:
         print(f"\n=== {kat['name'].upper()} ===")
-        pages = kat.get('pages', PAGES)
-        jobs = fetch_jobs(kat['keywords'], kat['location'], kat.get('max_jobs', 200), pages=pages)
+        jobs = fetch_jobs(kat['keywords'], kat['location'])
 
         if kat['name'] == 'alle':
             before = len(jobs)
@@ -192,7 +176,6 @@ def main():
         with open(kat['output'], 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
         print(f"Gespeichert: {kat['output']}")
-        output_files.append(kat['output'])
 
         if kat['name'] != 'alle':
             all_combined.extend(jobs)
