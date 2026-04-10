@@ -170,7 +170,7 @@
           <textarea id="fieldMessage" placeholder="Warum sind Sie für diese Stelle geeignet?"></textarea>
         </div>
         <div class="form-group">
-          <label>Lebenslauf (PDF oder Word, max. 500 KB)</label>
+          <label>Lebenslauf (PDF oder Word, max. 2 MB)</label>
           <div class="file-upload">
             <div>📎 Datei auswählen</div>
             <div class="file-name" id="fileName"></div>
@@ -299,8 +299,8 @@ async function submitForm() {
   const fileInput = document.getElementById('fieldFile');
   const file = fileInput?.files[0];
 
-  if (file && file.size > 512000) {
-    errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 500 KB hochladen.';
+  if (file && file.size > 2000000) {
+    errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 2 MB hochladen.';
     errEl.style.display = 'block';
     return;
   }
