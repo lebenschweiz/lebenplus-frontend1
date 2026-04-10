@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pflege Jobs Schweiz – lebenplus-jobs.ch</title>
+<title>Finance &amp; Banking Jobs Schweiz – lebenplus-jobs.ch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('6Ra4TSz45CcgUI88j');</script>
 <style>
-  :root { 
-    --bg: #09090b; 
-    --card: #18181b; 
+  :root {
+    --bg: #09090b;
+    --card: #18181b;
     --card-hover: #27272a;
-    --border: #3f3f46; 
+    --border: #3f3f46;
     --border-light: #52525b;
-    --accent: #f97316; 
+    --accent: #f97316;
     --accent-glow: rgba(249, 115, 22, 0.4);
-    --accent2: #f43f5e; 
-    --text: #f8fafc; 
+    --accent2: #f43f5e;
+    --text: #f8fafc;
     --text-muted: #a1a1aa;
     --success: #10b981;
     --font-head: 'Syne', sans-serif;
@@ -120,12 +120,12 @@
 <nav>
   <a href="/" class="logo">lebenplus<span>-jobs</span></a>
   <div class="nav-links">
-    <a href="/pflege" class="active">Pflege</a>
+    <a href="/pflege">Pflege</a>
     <a href="/sap">SAP</a>
     <a href="/it">IT</a>
     <a href="/lehrer">Lehrer</a>
     <a href="/aerzte">Ärzte</a>
-    <a href="/finanzen">Finance</a>
+    <a href="/finanzen" class="active">Finance</a>
     <a href="/bau">Bau</a>
     <a href="/gastronomie">Gastro</a>
     <a href="/logistik">Logistik</a>
@@ -135,11 +135,11 @@
 
 <div class="hero">
   <div class="hero-tag">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-    Pflege &amp; Medizin
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+    Finance &amp; Banking
   </div>
-  <h1>Pflege Jobs<br>in der <em>Schweiz.</em></h1>
-  <p>Finde spannende Stellenanzeigen für Pflegefachpersonen, FaGe und medizinisches Personal – von uns für dich kuratiert.</p>
+  <h1>Finance Jobs<br>in der <em>Schweiz.</em></h1>
+  <p>Aktuelle Stellen für Buchhalter, Controller, Compliance-Spezialisten, Treasury Manager und Finanzfachleute – täglich aktualisiert.</p>
   <div class="hero-stats">
     <div class="stat"><div class="stat-num" id="totalJobs">–</div><div class="stat-label">Offene Stellen</div></div>
   </div>
@@ -150,7 +150,7 @@
     <div class="search-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
     </div>
-    <input type="text" id="searchInput" placeholder="Stichwort suchen (z.B. Intensivpflege, Zürich...)" oninput="filterJobs()">
+    <input type="text" id="searchInput" placeholder="Stichwort suchen (z.B. Controller, Zürich...)" oninput="filterJobs()">
     <button onclick="filterJobs()">Jobs finden</button>
   </div>
 </div>
@@ -188,7 +188,7 @@
       <div id="applyFormContainer">
         <div class="apply-title">Jetzt bewerben</div>
         <div class="apply-subtitle">Hinterlasse uns deine Daten, wir melden uns umgehend bei dir.</div>
-        <form id="applyForm" onsubmit="submitForm(event)">
+        <form id="applyForm" name="bewerbung-finanzen" onsubmit="submitForm(event)">
           <input type="hidden" id="hiddenStelle" name="stelle">
           <input type="hidden" id="hiddenUnternehmen" name="unternehmen">
           <div class="form-group">
@@ -240,7 +240,7 @@ const iconSalary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
 
 async function loadJobs() {
   try {
-    const r = await fetch('/data/pflege-jobs.json?t=' + Date.now());
+    const r = await fetch('/data/finanzen-jobs.json?t=' + Date.now());
     if (!r.ok) throw new Error('fetch failed');
     const data = await r.json();
     allJobs = data.jobs || [];
@@ -273,7 +273,7 @@ function renderJobs(jobs) {
             <div class="job-title">${job.title}</div>
           </div>
         </div>
-        <span class="job-badge">Pflege</span>
+        <span class="job-badge">Finance</span>
       </div>
       ${job.description ? `<div class="job-desc-preview">${stripHtml(job.description)}</div>` : ''}
       <div class="job-bottom">

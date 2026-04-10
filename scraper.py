@@ -62,6 +62,30 @@ KATEGORIEN = [
         'output': 'data/aerzte-jobs.json',
     },
     {
+        'name': 'finanzen',
+        'keywords': ['Buchhalter', 'Controller', 'Compliance', 'Finance', 'Banking', 'Treasury', 'Finanzanalyst'],
+        'location': 'Schweiz',
+        'output': 'data/finanzen-jobs.json',
+    },
+    {
+        'name': 'bau',
+        'keywords': ['Bauleiter', 'Elektriker', 'Maurer', 'Schreiner', 'Sanitär', 'Polier', 'Architekt', 'Gebäudetechnik'],
+        'location': 'Schweiz',
+        'output': 'data/bau-jobs.json',
+    },
+    {
+        'name': 'gastronomie',
+        'keywords': ['Koch', 'Küchenchef', 'Service', 'Hoteldirektor', 'Gastronomie', 'Restaurant', 'Hotellerie', 'Catering'],
+        'location': 'Schweiz',
+        'output': 'data/gastronomie-jobs.json',
+    },
+    {
+        'name': 'logistik',
+        'keywords': ['Logistik', 'Lager', 'Transport', 'Disponent', 'Supply Chain', 'Spediteur', 'Fahrer'],
+        'location': 'Schweiz',
+        'output': 'data/logistik-jobs.json',
+    },
+    {
         'name': 'alle',
         'keywords': ALLE_KEYWORDS,
         'location': 'Schweiz',
