@@ -6,7 +6,7 @@
 <title>IT Jobs Schweiz – lebenplus-jobs.ch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init('6Ra4TSz45CcgUI88j');</script>
 <style>
   :root { --bg:#0f0f0f; --card:#181818; --border:#2a2a2a; --accent:#e85d2f; --accent2:#ff8c5a; --text:#f0f0f0; --muted:#888; }
@@ -282,53 +282,24 @@ function showFileName(input) { document.getElementById('fileName').textContent =
 async function submitForm(e) {
   e.preventDefault();
   const form = e.target;
+
   const fileInput = form.querySelector('input[name="lebenslauf"]');
-  const file = fileInput?.files?.[0];
-  const btn = document.getElementById('submitBtn');
-  const errEl = document.getElementById('errorMsg');
-
-  const params = {
-    name:        form.querySelector('[name="name"]').value,
-    from_email:  form.querySelector('[name="from_email"]').value,
-    email:       form.querySelector('[name="from_email"]').value,
-    phone:       form.querySelector('[name="phone"]').value,
-    message:     form.querySelector('[name="message"]').value,
-    stelle:      document.getElementById('hiddenStelle').value,
-    unternehmen: document.getElementById('hiddenUnternehmen').value,
-    title:       document.getElementById('hiddenStelle').value,
-  };
-
-  if (file) {
-    if (file.size > 2000000) {
-      errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 2 MB hochladen.';
-      errEl.style.display = 'block';
-      return;
-    }
-    const base64 = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result.split(',')[1]);
-      reader.readAsDataURL(file);
-    });
-    params.lebenslauf = base64;
+  if (fileInput?.files?.[0] && fileInput.files[0].size > 2000000) {
+    alert('Bitte eine Datei bis max. 2 MB hochladen.');
+    return;
   }
-
-  btn.disabled = true;
-  btn.textContent = 'Wird gesendet…';
-  errEl.style.display = 'none';
 
   try {
-    await emailjs.send('service_9f6wp97', 'template_u5grmqf', params);
-    document.getElementById('applyForm').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-    setTimeout(closePopup, 3000);
+    await emailjs.sendForm('service_9f6wp97', 'template_u5grmqf', form, '6Ra4TSz45CcgUI88j');
   } catch(err) {
     console.error('EmailJS Fehler:', err);
-    const msg = err?.text || err?.message || JSON.stringify(err);
-    errEl.textContent = 'Fehler beim Senden: ' + msg;
-    errEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Bewerbung absenden →';
+    alert('Fehler beim Senden: ' + (err?.text || err));
+    return;
   }
+
+  document.getElementById('applyForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+  setTimeout(closePopup, 3000);
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') closePopup(); });
