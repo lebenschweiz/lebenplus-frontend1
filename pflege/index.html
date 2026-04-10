@@ -184,22 +184,24 @@
       <div id="applyFormContainer">
         <div class="apply-title">Jetzt bewerben</div>
         <div class="apply-subtitle">Hinterlasse uns deine Daten, wir melden uns umgehend bei dir.</div>
-        <form id="applyForm">
+        <form id="applyForm" onsubmit="submitForm(event)">
+          <input type="hidden" id="hiddenStelle" name="stelle">
+          <input type="hidden" id="hiddenUnternehmen" name="unternehmen">
           <div class="form-group">
             <label>Vollständiger Name *</label>
-            <input type="text" id="fieldName" required placeholder="Max Mustermann">
+            <input type="text" id="fieldName" name="name" required placeholder="Max Mustermann">
           </div>
           <div class="form-group">
             <label>E-Mail-Adresse *</label>
-            <input type="email" id="fieldEmail" required placeholder="max@beispiel.ch">
+            <input type="email" id="fieldEmail" name="from_email" required placeholder="max@beispiel.ch">
           </div>
           <div class="form-group">
             <label>Telefonnummer</label>
-            <input type="tel" id="fieldPhone" placeholder="+41 79 123 45 67">
+            <input type="tel" id="fieldPhone" name="phone" placeholder="+41 79 123 45 67">
           </div>
           <div class="form-group">
             <label>Kurze Vorstellung (optional)</label>
-            <textarea id="fieldMessage" placeholder="Warum passt du perfekt auf diese Stelle?"></textarea>
+            <textarea id="fieldMessage" name="message" placeholder="Warum passt du perfekt auf diese Stelle?"></textarea>
           </div>
           <div class="form-group">
             <label>Lebenslauf (PDF oder Word, max. 2 MB)</label>
@@ -207,11 +209,11 @@
               <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 12v6"/><path d="m9 15 3-3 3 3"/></svg>
               <div>Klicke hier, um eine Datei auszuwählen</div>
               <div class="file-name" id="fileName"></div>
-              <input type="file" id="fieldFile" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
+              <input type="file" id="fieldFile" name="lebenslauf" accept=".pdf,.doc,.docx" onchange="showFileName(this)">
             </div>
           </div>
           <div class="error-msg" id="errorMsg"></div>
-          <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Bewerbung absenden</button>
+          <button type="submit" class="submit-btn" id="submitBtn">Bewerbung absenden</button>
         </form>
       </div>
       <div class="success-msg" id="successMsg">
@@ -310,6 +312,8 @@ function openPopup(i) {
   document.getElementById('successMsg').style.display = 'none';
   document.getElementById('errorMsg').style.display = 'none';
   document.getElementById('applyForm').reset();
+  document.getElementById('hiddenStelle').value = job.title || '';
+  document.getElementById('hiddenUnternehmen').value = job.company || '';
   document.getElementById('fileName').textContent = '';
   document.getElementById('popupOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -330,34 +334,37 @@ function showFileName(input) {
   else { label.textContent = ''; }
 }
 
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function submitForm() {
+async function submitForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const fileInput = form.querySelector('input[name="lebenslauf"]');
+  const file = fileInput?.files?.[0];
   const btn = document.getElementById('submitBtn');
   const errEl = document.getElementById('errorMsg');
-  const nameVal  = document.getElementById('fieldName').value.trim();
-  const emailVal = document.getElementById('fieldEmail').value.trim();
 
-  if (!nameVal || !emailVal) {
-    errEl.textContent = 'Bitte Name und E-Mail-Adresse ausfüllen.';
-    errEl.style.display = 'block';
-    return;
-  }
+  const params = {
+    name:        form.querySelector('[name="name"]').value,
+    from_email:  form.querySelector('[name="from_email"]').value,
+    email:       form.querySelector('[name="from_email"]').value,
+    phone:       form.querySelector('[name="phone"]').value,
+    message:     form.querySelector('[name="message"]').value,
+    stelle:      document.getElementById('hiddenStelle').value,
+    unternehmen: document.getElementById('hiddenUnternehmen').value,
+    title:       document.getElementById('hiddenStelle').value,
+  };
 
-  const fileInput = document.getElementById('fieldFile');
-  const file = fileInput?.files[0];
-
-  if (file && file.size > 2000000) {
-    errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 2 MB hochladen.';
-    errEl.style.display = 'block';
-    return;
+  if (file) {
+    if (file.size > 2000000) {
+      errEl.textContent = 'Die Datei ist zu gross. Bitte eine Datei bis max. 2 MB hochladen.';
+      errEl.style.display = 'block';
+      return;
+    }
+    const base64 = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+    params.lebenslauf = base64;
   }
 
   btn.disabled = true;
@@ -365,24 +372,7 @@ async function submitForm() {
   errEl.style.display = 'none';
 
   try {
-    const templateParams = {
-      stelle:      currentJob?.title || '',
-      unternehmen: currentJob?.company || '',
-      title:       currentJob?.title || '',
-      from_email:  emailVal,
-      name:        nameVal,
-      email:       emailVal,
-      phone:       document.getElementById('fieldPhone')?.value || '',
-      message:     document.getElementById('fieldMessage')?.value || '',
-    };
-
-    if (file) {
-      const dataUrl = await readFileAsDataURL(file);
-      templateParams.lebenslauf      = dataUrl;
-      templateParams.lebenslauf_name = file.name;
-    }
-
-    await emailjs.send('service_9f6wp97', 'template_u5grmqf', templateParams);
+    await emailjs.send('service_9f6wp97', 'template_u5grmqf', params);
     document.getElementById('applyFormContainer').style.display = 'none';
     document.getElementById('successMsg').style.display = 'flex';
     setTimeout(closePopup, 3000);
