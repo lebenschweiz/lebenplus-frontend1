@@ -99,7 +99,7 @@ FILTER_BEGRIFFE = [
     'sap', 'software', 'entwickler', 'informatik', 'devops',
     'cloud', 'cybersecurity', 'data scientist', 'frontend',
     'backend', 'ingenieur', 'maschinenbau', 'elektriker',
-    'it-', ' it ', 'programmer',
+    'en-', ' it ', 'programmer',
 ]
 
 
@@ -131,7 +131,7 @@ def fetch_jobs_for_keyword(keyword, location, seen_urls):
         params = {'keywords': keyword, 'location': location, 'pagesize': PAGE_SIZE, 'page': page}
         try:
             r = requests.get(BACKEND_URL, params=params, timeout=60)
-            print(f"  [{keyword}] Seite {page} – HTTP {r.status_code}")
+            print(f"  [{keyword}] Seite {page} → HTTP {r.status_code}")
             data = r.json()
 
             if data.get('type') != 'JOBS':
@@ -177,7 +177,7 @@ def fetch_jobs(keywords, location):
     for keyword in keywords:
         jobs = fetch_jobs_for_keyword(keyword, location, seen_urls)
         all_jobs.extend(jobs)
-        print(f"  → '{keyword}': {len(jobs)} neue Jobs (gesamt: {len(all_jobs)})")
+        print(f"    → '{keyword}': {len(jobs)} neue Jobs (gesamt: {len(all_jobs)})")
 
     return all_jobs
 
